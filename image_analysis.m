@@ -1,0 +1,10 @@
+axon_terminal = imread('MAX_021421_animalFB_40x_01-1.tif',2);
+muscle_endplate = imread('MAX_021421_animalFB_40x_01-1.tif',1);
+imshow(axon_terminal);
+axon_thresh = graythresh(axon_terminal);
+axon_med = medfilt2(axon_terminal);
+axon_thresh = graythresh(axon_terminal);
+bw_axon = imbinarize(axon_med, axon_thresh);
+axon_filt = medfilt2(bw_axon);
+axon_filt_2 = wiener2(axon_filt,[5 5]);
+imshow(axon_filt_2);
