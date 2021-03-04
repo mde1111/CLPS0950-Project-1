@@ -1,9 +1,9 @@
 %Graph of results - dotplots and/or density curves of most measurements
 
 %Graph across lifespan - graph to look at how measurements change with age
-
+%graph for each measuremnt (column 4
 graphs = figure;
-
+xlsread(monthSTMdata)
 x = importedxdata;
 y = importedydata;
 
