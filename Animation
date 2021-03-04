@@ -1,0 +1,12 @@
+%Katie Yetter  3/3/21
+
+%Creating animation: Display picture of neuromusculat junction image, provide a key (legend) so users can select different parts of the neuromuscular junction to explore
+
+Image = imread('110819_animal551_40x_02.tif'); %Directly import main neuromuscular junction image to be the main screen - HOM mouse
+imagesc(Image)
+Axis image;
+Axis off;
+
+%Legend for key press:
+title(‘Key’, ‘Interpreter’, ‘None’, ‘Fontsize’, 20, ‘Fontweight’, ‘bold’);
+Str = sprintf
