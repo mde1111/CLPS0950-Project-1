@@ -7,7 +7,7 @@ imagesc(Image)
 Axis image;
 Axis off;
 
-%Legend for key press:
+%Legend for key press: ADD KEYS
 title(‘Key’, ‘Interpreter’, ‘None’, ‘Fontsize’, 20, ‘Fontweight’, ‘bold’);
 Str = sprintf
 
@@ -18,7 +18,7 @@ DrawFormattedText(window, 'Instructions:', 18, 50, [0 0 0]);
 DrawFormattedText(window, 'Refer to the legend to choose which image you want to see!', 20, 50, [0 1 0]);
 Screen('Flip', window);
 
-%Press a Key based on the legend to see a specific part of the neuromuscular junction
+%Press a Key based on the legend to see a specific part of the neuromuscular junction: ADD IMAGE NAMES/ALL AVAILABLE IMAGES
 [keyIsDown, secs, keyCode] = KbCheck;
 if (key=='q')
   % image = loadimage(IMAGENAME)
