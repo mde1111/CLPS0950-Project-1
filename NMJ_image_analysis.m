@@ -1,15 +1,19 @@
-%written by Madison Ewing on 03.04.21
+function [morph_table] = NMJ_image_analysis(NMJ_image)
+%NMJ_IMAGE_ANALYSIS Takes flattened maximum Z projection of 2 channel NMJ
+%iamges (input as imported images); calculates morphological data and
+%outputs results in table
+%Created by Madison Ewing 03.05.21
+
 %morphological measurements used to analyze NMJs adapted from NMJ morph
 %macro workflow (Jones et al. 2016), which can be found at this link:
 %https://royalsocietypublishing.org/doi/10.1098/rsob.160240#RSOB160240C32
 
+%factor for conversion from pixels to micrometers (um)
 pixels_per_um = 10.91;
-%um_length = pixel_length / pixels_per_um; 
-% Convert length in pixels to um
 
 %load image, which has presynaptic (1) and postsynaptic (2) channels
-axon_terminal = imread('MAX_021421_animalFB_40x_01-1.tif',2);
-muscle_endplate = imread('MAX_021421_animalFB_40x_01-1.tif',1);
+axon_terminal = imread(NMJ_image,2);
+muscle_endplate = imread(NMJ_image,1);
 
 %threshold, filter, and make binary nerve terminal
 axon_thresh = graythresh(axon_terminal);
@@ -96,3 +100,7 @@ overlap = syn_contact_um2 / AChR_area_um2;
 %fragmentation of AChR clusters
 AChR_frag = bwconncomp(endplate_filt_2);
 fragmentation =AChR_frag.NumObjects;
+
+%image = morph_table;
+end
+
