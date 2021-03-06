@@ -1,9 +1,18 @@
 %Katie Yetter  3/3/21
 
-%Creating animation: Display picture of neuromusculat junction image, provide a key (legend) so users can select different parts of the neuromuscular junction to explore
+%%%SCREENSHOT 4 IMAGES & CREATE 4 IF STATEMENTS (WTpre, WTpost, HOMpre, HOMpost)!!!!!!!!!!!!!!!!!!!!!!!!!!
+  %%MAKE SURE I ADD HOW TO GET HERE IN LEGEND
+  %%%
 
-Image = imread('110819_animal551_40x_02.tif'); %Directly import main neuromuscular junction image to be the main screen - HOM mouse
-imagesc(Image)
+
+%Currently I have  two images: Both are 3 month male sternomastoid images: animal524_40x_03 from a HOM and animal551_40x_02 from a WT animal.
+%Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
+  %Maybe just compare these two? Is that enough? Maybe include  an animated picture of what it looks like all together, then provide these 2?
+
+%Creating animation: Display picture of neuromuscular junction image, provide a key (legend) so users can select different parts of the neuromuscular junction to explore
+
+imread = ('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
+c(img)
 Axis image;
 Axis off;
 
@@ -18,9 +27,40 @@ DrawFormattedText(window, 'Instructions:', 18, 50, [0 0 0]);
 DrawFormattedText(window, 'Refer to the legend to choose which image you want to see!', 20, 50, [0 1 0]);
 Screen('Flip', window);
 
+while quit == false;
+%DISPLAY ORIGINAL IMAGE
+% These next pieces of code  are to call the images up: still have to figure out which one to use
+
 %Press a Key based on the legend to see a specific part of the neuromuscular junction: ADD IMAGE NAMES/ALL AVAILABLE IMAGES
+answered = false;
+while ~answered
 [keyIsDown, secs, keyCode] = KbCheck;
-if (key=='q')
-  % image = loadimage(IMAGENAME)
-if (key=='w')
-  % image = loadimage(IMAGENAME)
+if keyIsDown
+  if strcmp(KbName(keyCode),'q') %check for key press
+    image = loadimage('110819_animal551_40x_02.tif') %%%ADDD SCREENSHOT (JPG)
+  elseif strcmp(KbName(keyCode),'w') %check for key press
+    image = loadimage('111019_animal524_40x_03.tif') %%%ADDD SCREENSHOT (JPG)
+  elseif
+  elseif
+  elseif strcmp(KbName(keyCode),'x')
+    quit = true;
+    break
+  end
+end
+%SHOW ORIGINAL IMAGE HERE
+%WAIT FOR KEY PRESS HERE
+end
+%QUIT SCREEN PROGRAMS: priority(0)sca
+end
+
+%This code will allow two images to be brought onto the same window side-by-side
+%I will want to do this multiple times based on key input
+[X1,map1]=imread('add primary image here'); %This is the main image
+[X2,map2]=imread('110819_animal551_40x_02.tif'); %WT Male mouse: Channel 1 is postsynaptic (muscle endplate) and channel 2 is presynaptic (nerve terminal).
+subplot(1,2,1), imshow(X1,map1)
+subplot(1,2,2), imshow(X2,map2)
+
+[X1,map1]=imread('add primary image here'); %This is the main image
+[X2,map2]=imread('111019_animal524_40x_03.tif'); %HOM Male mouse: Channel 1 is postsynaptic (muscle endplate) and channel 2 is presynaptic (nerve terminal).
+subplot(1,2,1), imshow(X1,map1)
+subplot(1,2,2), imshow(X2,map2)
