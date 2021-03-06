@@ -15,19 +15,37 @@ if strcmp(muscle,'STM')
         xvar = [14, 21, 30, 90, 420, 720];
         
     elseif strcmp(x, 'specific time interval')
-        xvar = [HOM, WT]
+        xvar = [HOM, WT];
         time = input('Would you like to analyze data at 14 days, 21 days, 1 month, 3 months, 14 months, or 2 years?');
             if strcmp(time, '14 days')
                 readtable(P14STMdata)
                 %add option of M/F or WT/HOM
+                disp('For this time interval we have male and female data.')
+                m = input('Would you like to plot based on "gender" or "genotype"?')
+                    if strcmp(m,'gender')
+                        xvar = [M, F];
+                        %code to get data for male into M and female into F
+                    end 
             elseif strcmp(time, '21 days')
                 readtable(P21STMdata)
                 %add option of M/F or WT/HOM
+                 disp('For this time interval we have male and female data.')
+                m = input('Would you like to plot based on "gender" or "genotype"?')
+                   if strcmp(m,'gender')
+                   %code to get data for male into M and female into F
+                       xvar = [M, F];
+                    end
             elseif strcmp(time, '1 month')
                 readtable(P30STMdata)
             elseif strcmp(time, '3 months')
                 readtable(monthSTMdata)
                 %add option of M/F or WT/HOM
+                 disp('For this time interval we have male and female data.')
+                m = input('Would you like to plot based on "gender" or "genotype"?')
+                   if strcmp(m,'gender')
+                       xvar = [M, F];
+                   %code to get data for male into M and female into F
+                    end
             elseif strcmp(time, '14 months')
                 readtable(monthSTMdata1)
             elseif strcmp(time, '2 years')
@@ -42,11 +60,11 @@ if strcmp(muscle,'STM')
     
 elseif strcmp(muscle,'SOL')
     readtable(monthSOLdata);
-    xvar = [HOM, WT]
+    xvar = [HOM, WT];
     
 elseif strcmp(muscle,'EDL')
     readtable(monthSOLdata);
-    xvar = [HOM, WT]
+    xvar = [HOM, WT];
 else 
     disp('Invalid entry. Please enter a valid muscle name.')
     muscle = input('Which muscle (STM, SOL, EDL) data are you interested in?');
@@ -57,9 +75,9 @@ end
 disp('For the following question, type one of the following options:')
 disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
 yvar = input('Which varibale data would you like to see?');
-yname = yvar
+yname = yvar;
     if strcmp(yvar, 'nerve terminal perimeter')
-        %yvar = data from column 2 
+        %yvar = xlsread
     end       
 
 %determine graphtype
