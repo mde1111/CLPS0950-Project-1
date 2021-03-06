@@ -60,17 +60,23 @@ complexity = log10(count_2 * branch_point_num * total_branch_leng);
 %threshold, filter, and make binary muscle endplate
 endplate_thresh = graythresh(muscle_endplate);
 endplate_med = medfilt2(muscle_endplate);
-endplate_thresh = graythresh(muscle_endplate);
 bw_endplate = imbinarize(endplate_med, endplate_thresh);
 endplate_filt = medfilt2(bw_endplate);
 endplate_filt_2 = wiener2(endplate_filt,[5 5]);
 
-%find area and perimeter of endplate
-endplate_area = bwarea(endplate_filt_2);
-endplate_perim = bwperim(endplate_filt_2);
-endplate_area_um2 = endplate_area / (pixels_per_um^2);
-endplate_perim_img = bwperim(endplate_filt_2);
-endplate_perim = sum(endplate_perim_img(:));
-endplate_perim_um = endplate_perim / pixels_per_um;
+%find area and perimeter of AChRs
+AChR_area = bwarea(endplate_filt_2);
+AChR_area_um2 = endplate_area / (pixels_per_um^2);
+AChR_perim_img = bwperim(endplate_filt_2);
+AChR_perim = sum(endplate_perim_img(:));
+AChR_perim_um = endplate_perim / pixels_per_um;
 %disp(endplate_area_um2);
 %disp(endplate_perim_um);
+
+%create smooth endplate around AChR staining
+structure = strel('disk',50);
+endplate_round = imclose(endplate_filt_2,structure);
+endplate_fill = imfill(endplate_round, 'holes');
+%imshow(endplate_fill);
+endplate_area_um2 = bwarea(endplate_fill) / (pixels_per_um^2);
+compactness = AChR_area_um2 / endplate_area_um2;
