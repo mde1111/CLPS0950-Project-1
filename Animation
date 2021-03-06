@@ -1,4 +1,10 @@
 %Katie Yetter  3/3/21
+
+%%%SCREENSHOT 4 IMAGES & CREATE 4 IF STATEMENTS (WTpre, WTpost, HOMpre, HOMpost)!!!!!!!!!!!!!!!!!!!!!!!!!!
+  %%MAKE SURE I ADD HOW TO GET HERE IN LEGEND
+  %%%
+
+
 %Currently I have  two images: Both are 3 month male sternomastoid images: animal524_40x_03 from a HOM and animal551_40x_02 from a WT animal.
 %Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
   %Maybe just compare these two? Is that enough? Maybe include  an animated picture of what it looks like all together, then provide these 2?
@@ -21,15 +27,31 @@ DrawFormattedText(window, 'Instructions:', 18, 50, [0 0 0]);
 DrawFormattedText(window, 'Refer to the legend to choose which image you want to see!', 20, 50, [0 1 0]);
 Screen('Flip', window);
 
-
+while quit == false;
+%DISPLAY ORIGINAL IMAGE
 % These next pieces of code  are to call the images up: still have to figure out which one to use
 
 %Press a Key based on the legend to see a specific part of the neuromuscular junction: ADD IMAGE NAMES/ALL AVAILABLE IMAGES
+answered = false;
+while ~answered
 [keyIsDown, secs, keyCode] = KbCheck;
-if (key=='q')
-  % image = loadimage('110819_animal551_40x_02.tif') 
-if (key=='w')
-  % image = loadimage('111019_animal524_40x_03.tif')
+if keyIsDown
+  if strcmp(KbName(keyCode),'q') %check for key press
+    image = loadimage('110819_animal551_40x_02.tif') %%%ADDD SCREENSHOT (JPG)
+  elseif strcmp(KbName(keyCode),'w') %check for key press
+    image = loadimage('111019_animal524_40x_03.tif') %%%ADDD SCREENSHOT (JPG)
+  elseif
+  elseif
+  elseif strcmp(KbName(keyCode),'x')
+    quit = true;
+    break
+  end
+end
+%SHOW ORIGINAL IMAGE HERE
+%WAIT FOR KEY PRESS HERE
+end
+%QUIT SCREEN PROGRAMS: priority(0)sca
+end
 
 %This code will allow two images to be brought onto the same window side-by-side
 %I will want to do this multiple times based on key input
