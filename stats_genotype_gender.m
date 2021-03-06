@@ -1,27 +1,33 @@
 function [NMJ_table] = stats_genotype_gender(NMJ_data, gender)
-%NMJ_GENOTYPE_STATS Find best fit distribution and runs stats on NMJ
-%morphology data, prints output and signficance of generalized linear model
-%with best fit distribution by genotype and gender
-%Input: NMJ_data = data table to analyze; gender = true or false
-%Output: data_signif = boolean vector of signficance by genotype
+%NMJ_GENOTYPE_STATS Finds distribution and runs stats on NMJ
+%morphology data, returns table with results of generalized linear model
+%statistical analysis
+%Input: NMJ_data = data table to analyze;
+    %gender = true if data includes M and F data, otherwise false
+%Output: NMJ_table, includes distribution, signficance by genotype, and
+    %p-values from glm
 % Written by Madison Ewing on 03.02.21
 
 %check AICc - if less than 2 different that normal, use normal distribution
 
 %sets columns from data table want to analyze
 col_nums = [2:8, 14:18];
-name_vec = [];
-data_signif = [];
-dist_vec = [];
-geno_pval_vec = [];
+
+%create empty vectors to populate for table
+measurement_name = [];
+data_significance = [];
+data_distribution = [];
+genotype_p_value = [];
 
 if ~gender
     %for loop to run through analysis for each column in col_nums by
     %genotype only
     for jj = col_nums
+        
+        %extract measurement names for table and set model for glm
         col_string = (NMJ_data.Properties.VariableNames(jj));
         col_name = char(NMJ_data.Properties.VariableNames(jj));
-        name_vec = [name_vec; col_string];
+        measurement_name = [measurement_name; col_string];
         geno_var = {' ~ Genotype'};
         mod_cell = strcat(col_name, geno_var);
         mod_spec = char(mod_cell);
@@ -29,7 +35,7 @@ if ~gender
         NMJ_log(1:end, col_name) = varfun(@log,NMJ_log,'InputVariables',col_name);
         
         if jj == 15 || jj == 17
-            %specify beta distribution for overlap and compactness
+            %beta distribution used for overlap and compactness
             %need logit link in glm as approx. of beta, can't compare AICc
             %distribution known from testing glm with BetaReg package in R
             beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
@@ -37,9 +43,8 @@ if ~gender
             data_mod = beta_mod;
             
         else
-            %specify model (eventually use for loop to go through all columns?)
-            %fit generalized linear model with possible distributions - normal, gamma,
-            %lognormal, poisson
+            %fit generalized linear model with most likely possible 
+            %distributions - normal, gamma,lognormal, poisson
             modelspec = (mod_spec);
             AIC_vec = [];
             norm_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal');
@@ -51,10 +56,8 @@ if ~gender
             pois_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'poisson');
             AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
 
-            %find proper distribution of data based on minimum AICc and save as
-            %variable data_dist
-            %print results from fitglm model of selected best-fit distribution
-            [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<*ASGLU>
+            %find and save best distribution of data based on minimum AICc
+            [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<ASGLU>
             if col == 1
                 data_dist = ("Normal");
                 data_mod = norm_mod;
@@ -71,34 +74,39 @@ if ~gender
                 data_dist = ("Unknown");
             end
         end
-        %disp(data_dist);
-        %disp(data_mod);
-        dist_vec = [dist_vec; data_dist];
+        
+        %create vector of distribution and p values to populate table
+        data_distribution = [data_distribution; data_dist];
         geno_p_val = data_mod.Coefficients.pValue(2);
-        geno_pval_vec = [geno_pval_vec; geno_p_val];
-        %disp(geno_p_val);
+        genotype_p_value = [genotype_p_value; geno_p_val];
     
-        %assigns boolean variable to data_signif for each column analyzed,
+        %assigns boolean variable to signif for each column analyzed,
         %where true = statistically signficant difference by genotype
         if geno_p_val <= 0.05
             signif = true;
         else
             signif = false;
         end
-    
-        data_signif = [data_signif; signif];
+        %vector of signficance for output table
+        data_significance = [data_significance; signif];
     end
 %save table of genotype results as output
-NMJ_table = table(name_vec, dist_vec, data_signif, geno_pval_vec);
+NMJ_table = table(measurement_name, data_distribution, data_significance, genotype_p_value);
 
 else
-    gend_pval_vec = [];
-    inter_pval_vec = [];
+    %if input data needs tested by genotype and gender
+    
+    %empty vectors for additional p values with gender analysis
+    gender_p_value = [];
+    interaction_p_value = [];
+    
     %for loop to run through analysis for each column in col_nums
     for jj = col_nums
+        
+        %extract measurement names for table and set model for glm
         col_string = NMJ_data.Properties.VariableNames(jj);
         col_name = char(NMJ_data.Properties.VariableNames(jj));
-        name_vec = [name_vec; col_string];
+        measurement_name = [measurement_name; col_string];
         geno_var = {' ~ Genotype * Gender'};
         mod_cell = strcat(col_name, geno_var);
         mod_spec = char(mod_cell);
@@ -106,17 +114,16 @@ else
         NMJ_log(1:end, col_name) = varfun(@log,NMJ_log,'InputVariables',col_name);
         
         if jj == 15 || jj == 17
-            %specify beta distribution for overlap and compactness
-            %need logit link in glm, can't compare AICc
+            %beta distribution used for overlap and compactness
+            %approximate with logit link in glm, can't compare AICc
             %distribution known from testing glm with BetaReg package in R
             beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
             data_dist = ("Beta");
             data_mod = beta_mod;
             
         else
-            %specify model (eventually use for loop to go through all columns?)
-            %fit generalized linear model with possible distributions - normal, gamma,
-            %lognormal, poisson
+            %Find and save best fit generalized linear model with likely 
+            %distributions - normal, gamma,lognormal, poisson
             modelspec = (mod_spec);
             AIC_vec = [];
             norm_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal');
@@ -128,10 +135,8 @@ else
             pois_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'poisson');
             AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
 
-            %find proper distribution of data based on minimum AICc and save as
-            %variable data_dist
-            %print results from fitglm model of selected best-fit distribution
-            [row, col] = find(AIC_vec == min(AIC_vec));
+            %find and save best fit distribution based on minimum AICc
+            [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<ASGLU>
             if col == 1
                 data_dist = ("Normal");
                 data_mod = norm_mod;
@@ -148,16 +153,15 @@ else
                 data_dist = ("Unknown");
             end
         end
-        %disp(data_dist);
-        %disp(data_mod);
-        dist_vec = [dist_vec; data_dist];
+        
+        %create vectors of distribution and p values to populate table
+        data_distribution = [data_distribution; data_dist];
         geno_p_val = data_mod.Coefficients.pValue(2);
-        geno_pval_vec = [geno_pval_vec; geno_p_val];
-        %disp(geno_p_val);
+        genotype_p_value = [genotype_p_value; geno_p_val];
         gend_p_val = data_mod.Coefficients.pValue(3);
-        gend_pval_vec = [gend_pval_vec; gend_p_val];
+        gender_p_value = [gender_p_value; gend_p_val];
         inter_p_val = data_mod.Coefficients.pValue(4);
-        inter_pval_vec = [inter_pval_vec; inter_p_val];
+        interaction_p_value = [interaction_p_value; inter_p_val];
     
         %assigns boolean variable to data_signif for each column analyzed,
         %where true = statistically signficant difference by genotype
@@ -166,9 +170,9 @@ else
         else
             signif = false;
         end
-        data_signif = [data_signif; signif];
+        data_significance = [data_significance; signif]; %#ok<*AGROW>
     end
     
 %save table of genotype and gender results as output of function
-NMJ_table = table(name_vec, dist_vec, data_signif, geno_pval_vec, gend_pval_vec, inter_pval_vec);
+NMJ_table = table(measurement_name, data_distribution, data_significance, genotype_p_value, gender_p_value, interaction_p_value);
 end
