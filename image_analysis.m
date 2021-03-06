@@ -23,34 +23,39 @@ axon_area_um2 = axon_area / (pixels_per_um^2);
 axon_perim_img = bwperim(axon_filt_2);
 axon_perim = sum(axon_perim_img(:));
 axon_perim_um = axon_perim / pixels_per_um;
-disp(axon_area_um2);
-disp(axon_perim_um);
+%disp(axon_area_um2);
+%disp(axon_perim_um);
 
 %skeletonize axon terminal and perform branching analysis
 axon_skel = bwskel(axon_filt_2);
-imshow(axon_skel);
-count_0 = 0;
 count_2 = 0;
+count_4 = 0;
+count_5 = 0;
+%imshow(axon_skel);
 
-for ii = 2:size(axon_skel,1)
-    for jj = 2:size(axon_skel,2)
-        pixel_connect = sum(axon_skel(jj-1:jj+1,ii-1:ii+1))-axon_skel(ii,jj);
-        if pixel_connect == 0
-            count_0 = count_0 + 1;
-        elseif pixel_connect == 2
-            count_2 = count_2 + 1;
-        elseif pixel_connect == 4;
-            count_4 = count_4 + 1;
-        elseif pixel_connect = 5;
-            count_5 = count_5 + 1;
+%check binary connectivity of pixels in skeletonized image
+for ii = 2:size(axon_skel,1)-1
+    for jj = 2:size(axon_skel,2)-1
+        pixel_check = axon_skel(jj-1:jj+1, ii-1:ii+1);
+        pixel_connect = sum(pixel_check(:));
+        if axon_skel(jj,ii) == 1
+            if pixel_connect == 2
+                count_2 = count_2 + 1;
+            elseif pixel_connect == 4
+                count_4 = count_4 + 1;
+            elseif pixel_connect == 5
+                count_5 = count_5 + 1;
+            end
         end
     end
 end
+
+%compute branching values from connectivity counts
 term_branch_num = count_2;
-branch_point_num = (count_4 + count_5) * 0.28;
-total_branch_leng = (size(axon_skel,1)^2 - count_0) / pixels_per_um;
+branch_point_num = count_4 + count_5;
+total_branch_leng = sum(axon_skel(:)) / pixels_per_um;
 avg_branch_leng = total_branch_leng / count_2;
-complexity = log10(count_2 * branch_point_num * total_branch_length);
+complexity = log10(count_2 * branch_point_num * total_branch_leng);
 
 %threshold, filter, and make binary muscle endplate
 endplate_thresh = graythresh(muscle_endplate);
@@ -67,5 +72,5 @@ endplate_area_um2 = endplate_area / (pixels_per_um^2);
 endplate_perim_img = bwperim(endplate_filt_2);
 endplate_perim = sum(endplate_perim_img(:));
 endplate_perim_um = endplate_perim / pixels_per_um;
-disp(endplate_area_um2);
-disp(endplate_perim_um);
+%disp(endplate_area_um2);
+%disp(endplate_perim_um);
