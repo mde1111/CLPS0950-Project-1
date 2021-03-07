@@ -8,10 +8,12 @@ function [morph_table] = NMJ_image_analysis(NMJ_directory)
 %macro workflow (Jones et al. 2016), which can be found at this link:
 %https://royalsocietypublishing.org/doi/10.1098/rsob.160240#RSOB160240C32
 
+%time to run = approx. 6 seconds/NMJ (compared to 3-5 minutes manually)
+
 %factor for conversion from pixels to micrometers (um)
 pixels_per_um = 10.91;
 
-%find tiff NMJ images in current folder to analyze
+%find tiff NMJ images in current folder and subfolders to analyze
 NMJFileNames = {};
 fileType = fullfile(NMJ_directory, '**/*.tif');
 NMJFiles = dir(fileType);
@@ -20,9 +22,8 @@ for n = 1 : length(NMJFiles)
     fullFileName = fullfile(NMJFiles(n).folder, baseFileName);
     NMJFileNames = [NMJFileNames; fullFileName];
 end
-disp(NMJFileNames);
 
-%empty vectors to popoulate for output table
+%vectors of zeros to popoulate for output table
 start_vec = zeros(length(NMJFileNames),1);
 NerveTerminalPerimeterum = start_vec;
 NerveTerminalAreaum2 = start_vec;
@@ -37,8 +38,9 @@ ManualEndplateAreaum2 = start_vec;
 ManualCompactness = start_vec;
 Fragmentation = start_vec;
 
+%loop to run through analysis on each tiff file found
 for c = 1:length(NMJFileNames)
-    %load image, which has presynaptic (1) and postsynaptic (2) channels
+    %load image, which has presynaptic (2) and postsynaptic (1) channel
     axon_terminal = imread(NMJFileNames{c},2);
     muscle_endplate = imread(NMJFileNames{c},1);
 
@@ -51,14 +53,12 @@ for c = 1:length(NMJFileNames)
 
     %find and save area of axon terminal
     axon_area = bwarea(axon_filt_2);
-    axon_area_um2 = axon_area / (pixels_per_um^2);
-    NerveTerminalAreaum2 (c) = axon_area_um2;
+    NerveTerminalAreaum2 (c) = axon_area / (pixels_per_um^2);
 
     %find and save perimeter of axon terminal
     axon_perim_img = bwperim(axon_filt_2);
     axon_perim = sum(axon_perim_img(:));
-    axon_perim_um = axon_perim / pixels_per_um;
-    NerveTerminalPerimeterum (c)= axon_perim_um;
+    NerveTerminalPerimeterum (c) = axon_perim / pixels_per_um;
 
     %skeletonize axon terminal and perform branching analysis
     axon_skel = bwskel(axon_filt_2);
@@ -67,6 +67,7 @@ for c = 1:length(NMJFileNames)
     count_5 = 0;
 
     %check binary connectivity of pixels in skeletonized image
+    %based on number of filled pixels in 8 pixels surrounding
     for ii = 2:size(axon_skel,1)-1
         for jj = 2:size(axon_skel,2)-1
             pixel_check = axon_skel(jj-1:jj+1, ii-1:ii+1);
@@ -85,14 +86,11 @@ for c = 1:length(NMJFileNames)
 
     %compute branching values from connectivity counts
     branch_point_num = count_4 + count_5;
-    total_branch_leng = sum(axon_skel(:)) / pixels_per_um;
-    TotalLengthOfBranchesum (c) = total_branch_leng;
+    TotalLengthOfBranchesum (c) = sum(axon_skel(:)) / pixels_per_um;
 
-    avg_branch_leng = total_branch_leng / count_2;
-    AverageLengthOfBranchesum (c) = avg_branch_leng;
+    AverageLengthOfBranchesum (c) = TotalLengthOfBranchesum (c) / count_2;
 
-    complex_val = log10(count_2 * branch_point_num * total_branch_leng);
-    Complexity (c) = complex_val;
+    Complexity (c) = log10(count_2 * branch_point_num * TotalLengthOfBranchesum (c));
 
     %threshold, filter, and make binary muscle endplate
     endplate_thresh = graythresh(muscle_endplate);
@@ -103,23 +101,19 @@ for c = 1:length(NMJFileNames)
 
     %find and save area of AChRs
     AChR_area = bwarea(endplate_filt_2);
-    AChR_area_um2 = AChR_area / (pixels_per_um^2);
-    AChRAreaum2 (c) = AChR_area_um2;
+    AChRAreaum2 (c) = AChR_area / (pixels_per_um^2);
 
     %find and save perimeter of AChRs
     AChR_perim_img = bwperim(endplate_filt_2);
     AChR_perim = sum(AChR_perim_img(:));
-    AChR_perim_um = AChR_perim / pixels_per_um;
-    AChRPerimeterum (c) = AChR_perim_um;
+    AChRPerimeterum (c) = AChR_perim / pixels_per_um;
 
     %create smooth endplate around AChR staining
     structure = strel('disk',50);
     endplate_round = imclose(endplate_filt_2,structure);
     endplate_fill = imfill(endplate_round, 'holes');
-    endplate_area_um2 = bwarea(endplate_fill) / (pixels_per_um^2);
-    ManualEndplateAreaum2 (c) = endplate_area_um2;
-    compactness = AChR_area_um2 / endplate_area_um2;
-    ManualCompactness (c) = compactness;
+    ManualEndplateAreaum2 (c) = bwarea(endplate_fill) / (pixels_per_um^2);
+    ManualCompactness (c) = AChRAreaum2 (c) / ManualEndplateAreaum2 (c);
 
     %area of synaptic contact and overlap
     syn_contact = 0;
@@ -130,15 +124,12 @@ for c = 1:length(NMJFileNames)
             end
         end
     end
-    syn_contact_um2 = syn_contact / (pixels_per_um^2);
-    AreaOfSynapticContactum2 (c) = syn_contact_um2;
-    over_area = syn_contact_um2 / AChR_area_um2;
-    Overlap (c) = over_area;
+    AreaOfSynapticContactum2 (c) = syn_contact / (pixels_per_um^2);
+    Overlap (c) = AreaOfSynapticContactum2 (c) / AChRAreaum2 (c);
 
     %fragmentation of AChR clusters
     AChR_frag = bwconncomp(endplate_filt_2);
-    frag_num = AChR_frag.NumObjects;
-    Fragmentation (c) = frag_num;
+    Fragmentation (c) = AChR_frag.NumObjects;
 end
 
 %Save results into output table
