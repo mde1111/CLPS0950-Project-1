@@ -49,8 +49,13 @@ if strcmp(muscle,'STM')
         y4 = readtable(d(:,n));
         y5 = readtable(e(:,n));
         y6 = readtable(f(:,n));
-        plot(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-        %while loop that is false and true only to jump to other loop 
+        gtype = input('Would you like to see the results in a scatterplot or line graph?');
+        if strcmp(gtype, 'scatterplot')
+            scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6);
+        else
+            plot(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
+        end
+        %exit script until the part where it ask to view another graph 
     elseif strcmp(x, 'specific time interval')
         xvar = [HOM, WT];
         time = input('Would you like to analyze data at 14 days, 21 days, 1 month, 3 months, 14 months, or 2 years?');
