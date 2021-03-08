@@ -1,24 +1,34 @@
 %Katie Yetter  3/3/21
 
+%Questions for TA: Is the legend okay?  Is the order of the code okay? 
+
 %%%SCREENSHOT 4 IMAGES & CREATE 4 IF STATEMENTS (WTpre, WTpost, HOMpre, HOMpost)!!!!!!!!!!!!!!!!!!!!!!!!!!
-  %%MAKE SURE I ADD HOW TO GET HERE IN LEGEND
-  %%%
 
 
 %Currently I have  two images: Both are 3 month male sternomastoid images: animal524_40x_03 from a HOM and animal551_40x_02 from a WT animal.
 %Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
-  %Maybe just compare these two? Is that enough? Maybe include  an animated picture of what it looks like all together, then provide these 2?
 
 %Creating animation: Display picture of neuromuscular junction image, provide a key (legend) so users can select different parts of the neuromuscular junction to explore
-
+[screenXpixels, screenYpixels] = Screen('WindowSize', window);
 imread = ('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
 c(img)
 Axis image;
 Axis off;
 
-%Legend for key press: ADD KEYS
-title(‘Key’, ‘Interpreter’, ‘None’, ‘Fontsize’, 20, ‘Fontweight’, ‘bold’);
-Str = sprintf
+%Legend for key press: Just finish adding titles
+
+[screenXpixels, screenYpixels] = Screen('WindowSize', window);
+Screen('TextSize', window, 70);
+Screen('TextFont', window, 'Courier');
+DrawFormattedText(window, 'Legend')
+DrawFormattedText(window, 'Press  q for WT.......)
+DrawFormattedText(window, 'Press w for HOM.....)
+DrawFormattedText(window, 'Press e for WT.....)
+DrawFormattedText(window, 'Press r for HOM.....)
+DrawFormattedText(window, 'Press space to exit current image') 
+screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1]);
+Screen('Flip', window);
+
 
 %Display instructions
 Screen('TextSize', window, 18);
@@ -28,8 +38,7 @@ DrawFormattedText(window, 'Refer to the legend to choose which image you want to
 Screen('Flip', window);
 
 while quit == false;
-%DISPLAY ORIGINAL IMAGE
-% These next pieces of code  are to call the images up: still have to figure out which one to use
+image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg') %Bring up original image of experimental data
 
 %Press a Key based on the legend to see a specific part of the neuromuscular junction: ADD IMAGE NAMES/ALL AVAILABLE IMAGES
 answered = false;
@@ -47,11 +56,16 @@ if keyIsDown
     break
   end
 end
-%SHOW ORIGINAL IMAGE HERE
-%WAIT FOR KEY PRESS HERE
+
+%SHOW ORIGINAL IMAGE 
+
+[window, windowRect] = PsychImaging('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'), screenNumber, grey); %Bring up original image of experimental data
+KbStrokeWait;
+Priority(0);
+sca;
 end
-%QUIT SCREEN PROGRAMS: priority(0)sca
-end
+
+%%% Alternative method to displaying images %%%%%%
 
 %This code will allow two images to be brought onto the same window side-by-side
 %I will want to do this multiple times based on key input
