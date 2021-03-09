@@ -1,7 +1,10 @@
-function [morph_table] = NMJ_image_analysis(NMJ_directory)
+function [morph_table] = NMJ_image_analysis(NMJ_directory, file_output)
 %NMJ_IMAGE_ANALYSIS Takes flattened maximum Z projection of 2 channel NMJ
-%iamges (input as string vector of imported images); calculates morphological data and
-%outputs results in table
+%iamges; calculates morphological data and outputs results in table
+%Inputs:
+    %NMJ_directory = choose folder/directory to analyze NMJs from; will
+        %analyze any tiff files in that folder and its subfolders
+    %file_output = string of name to save file as csv
 %Created by Madison Ewing 03.05.21
 
 %morphological measurements used to analyze NMJs adapted from NMJ morph
@@ -134,5 +137,8 @@ end
 
 %Save results into output table
 morph_table = table(NMJFileNames,NerveTerminalPerimeterum, NerveTerminalAreaum2, TotalLengthOfBranchesum, AverageLengthOfBranchesum, Complexity, AChRPerimeterum, AChRAreaum2, AreaOfSynapticContactum2, Overlap, ManualEndplateAreaum2, ManualCompactness, Fragmentation);
+table_name = strcat(file_output, '.csv');
+file_name = char(table_name);
+writetable(morph_table,file_name);
 end
 

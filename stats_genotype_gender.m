@@ -1,14 +1,14 @@
-function [NMJ_table] = stats_genotype_gender(NMJ_data, gender)
+function [NMJ_table] = stats_genotype_gender(NMJ_data, gender, output_name)
 %NMJ_GENOTYPE_STATS Finds distribution and runs stats on NMJ
 %morphology data, returns table with results of generalized linear model
 %statistical analysis
 %Input: NMJ_data = data table to analyze;
     %gender = true if data includes M and F data, otherwise false
+    %output_name = string in single quote for desired filename
 %Output: NMJ_table, includes distribution, signficance by genotype, and
     %p-values from glm
+    %saved in current directory under output_name as csv file
 % Written by Madison Ewing on 03.02.21
-
-%check AICc - if less than 2 different that normal, use normal distribution
 
 %sets columns from data table want to analyze
 col_nums = [2:8, 14:18];
@@ -31,48 +31,41 @@ if ~gender
         geno_var = {' ~ Genotype'};
         mod_cell = strcat(col_name, geno_var);
         mod_spec = char(mod_cell);
-        NMJ_log = NMJ_data;
-        NMJ_log(1:end, col_name) = varfun(@log,NMJ_log,'InputVariables',col_name);
         
-        if jj == 15 || jj == 17
-            %beta distribution used for overlap and compactness
-            %need logit link in glm as approx. of beta, can't compare AICc
-            %distribution known from testing glm with BetaReg package in R
-            beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
-            data_dist = ('Beta');
-            data_mod = beta_mod;
-            
-        else
-            %fit generalized linear model with most likely possible 
-            %distributions - normal, gamma,lognormal, poisson
-            modelspec = (mod_spec);
-            AIC_vec = [];
-            norm_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal');
-            AIC_vec = [AIC_vec, norm_mod.ModelCriterion.AICc];
-            gam_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'gamma');
-            AIC_vec = [AIC_vec, gam_mod.ModelCriterion.AICc];
-            log_mod = fitglm(NMJ_log, modelspec, 'Distribution', 'normal');
-            AIC_vec = [AIC_vec, log_mod.ModelCriterion.AICc];
-            pois_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'poisson');
-            AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
+        %fit generalized linear model with most likely possible 
+        %distributions - normal, gamma,lognormal, poisson, beta
+        modelspec = (mod_spec);
+        AIC_vec = [];
+        norm_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal');
+        AIC_vec = [AIC_vec, norm_mod.ModelCriterion.AICc];
+        gam_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'gamma');
+        AIC_vec = [AIC_vec, gam_mod.ModelCriterion.AICc];
+        log_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal','link','log');
+        AIC_vec = [AIC_vec, log_mod.ModelCriterion.AICc];
+        pois_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'poisson');
+        AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
+        beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
+        AIC_vec = [AIC_vec, beta_mod.ModelCriterion.AICc];
 
-            %find and save best distribution of data based on minimum AICc
-            [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<ASGLU>
-            if col == 1
-                data_dist = ("Normal");
-                data_mod = norm_mod;
-            elseif col == 2
-                data_dist = ("Gamma");
-                data_mod = gam_mod;
-            elseif col == 3
-                data_dist = ("Lognormal");
-                data_mod = log_mod;
-            elseif col == 4
-                data_dist = ("Poisson");
-                data_mod = pois_mod;
-            else
-                data_dist = ("Unknown");
-            end
+        %find and save best distribution of data based on minimum AICc
+        [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<ASGLU>
+        if col == 1
+            data_dist = ("Normal");
+            data_mod = norm_mod;
+        elseif col == 2
+            data_dist = ("Gamma");
+            data_mod = gam_mod;
+        elseif col == 3
+            data_dist = ("Lognormal");
+            data_mod = log_mod;
+        elseif col == 4
+            data_dist = ("Poisson");
+            data_mod = pois_mod;
+        elseif col == 5
+            data_dist = ("Beta");
+            data_mod = beta_mod;
+        else
+            data_dist = ("Unknown");
         end
         
         %create vector of distribution and p values to populate table
@@ -110,48 +103,50 @@ else
         geno_var = {' ~ Genotype * Gender'};
         mod_cell = strcat(col_name, geno_var);
         mod_spec = char(mod_cell);
-        NMJ_log = NMJ_data;
-        NMJ_log(1:end, col_name) = varfun(@log,NMJ_log,'InputVariables',col_name);
         
-        if jj == 15 || jj == 17
-            %beta distribution used for overlap and compactness
-            %approximate with logit link in glm, can't compare AICc
-            %distribution known from testing glm with BetaReg package in R
-            beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
+        %Find and save best fit generalized linear model with likely 
+        %distributions - normal, gamma,lognormal, poisson
+        modelspec = (mod_spec);
+        AIC_vec = [];
+        norm_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal');
+        AIC_vec = [AIC_vec, norm_mod.ModelCriterion.AICc];
+        gam_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'gamma');
+        AIC_vec = [AIC_vec, gam_mod.ModelCriterion.AICc];
+        log_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal','link','log');
+        AIC_vec = [AIC_vec, log_mod.ModelCriterion.AICc];
+        pois_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'poisson');
+        AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
+        beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
+        AIC_vec = [AIC_vec, beta_mod.ModelCriterion.AICc];
+        if jj == 15
+        disp(AIC_vec);
+        end
+
+        %find and save best fit distribution based on minimum AICc
+        [row, col] = find(AIC_vec == min(AIC_vec));%#ok<ASGLU>
+        
+        %fix bug for if tie AIC values
+        if length(col) > 1
+            col = col(1,1);
+        end
+        
+        if col == 1
+            data_dist = ("Normal");
+            data_mod = norm_mod;
+        elseif col == 2
+            data_dist = ("Gamma");
+            data_mod = gam_mod;
+        elseif col == 3
+            data_dist = ("Lognormal");
+            data_mod = log_mod;
+        elseif col == 4
+            data_dist = ("Poisson");
+            data_mod = pois_mod;
+        elseif col == 5
             data_dist = ("Beta");
             data_mod = beta_mod;
-            
         else
-            %Find and save best fit generalized linear model with likely 
-            %distributions - normal, gamma,lognormal, poisson
-            modelspec = (mod_spec);
-            AIC_vec = [];
-            norm_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'normal');
-            AIC_vec = [AIC_vec, norm_mod.ModelCriterion.AICc];
-            gam_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'gamma');
-            AIC_vec = [AIC_vec, gam_mod.ModelCriterion.AICc];
-            log_mod = fitglm(NMJ_log, modelspec, 'Distribution', 'normal');
-            AIC_vec = [AIC_vec, log_mod.ModelCriterion.AICc];
-            pois_mod = fitglm(NMJ_data, modelspec, 'Distribution', 'poisson');
-            AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
-
-            %find and save best fit distribution based on minimum AICc
-            [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<ASGLU>
-            if col == 1
-                data_dist = ("Normal");
-                data_mod = norm_mod;
-            elseif col == 2
-                data_dist = ("Gamma");
-                data_mod = gam_mod;
-            elseif col == 3
-                data_dist = ("Lognormal");
-                data_mod = log_mod;
-            elseif col == 4
-                data_dist = ("Poisson");
-                data_mod = pois_mod;
-            else
-                data_dist = ("Unknown");
-            end
+            data_dist = ("Unknown");
         end
         
         %create vectors of distribution and p values to populate table
@@ -175,4 +170,10 @@ else
     
 %save table of genotype and gender results as output of function
 NMJ_table = table(measurement_name, data_distribution, data_significance, genotype_p_value, gender_p_value, interaction_p_value);
+end
+
+%save table in current directory under chosen input name
+table_file = strcat(output_name, '.csv');
+table_name = char(table_file);
+writetable(NMJ_table,table_name);
 end
