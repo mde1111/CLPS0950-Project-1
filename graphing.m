@@ -296,11 +296,13 @@ yname = yvar;
 %determine graphtype
 disp('For the following question, type one of the following options: bar, scatterplot')
 graphtype = input('What type of graph would you like?','s');
-%code to differentiate between HOM data and WT data and separate them
-%if genotype(column 20) = HOM or WT
+%%code to differentiate between HOM data and WT data and separate them
+%%if genotype(column 20) = HOM or WT
+%HOMyvar = 
+%WTyvar =
 if strcmp(graphytype,'bar')
-    f1 = figure;
     %take average of all values for each category (WT/HOM)
+    f1 = figure;
     bar(yvar,0.5)
     set('xticklabel',{'HOM', 'WT'});
     xlabel('genotype')
@@ -309,8 +311,10 @@ if strcmp(graphytype,'bar')
 elseif strcmp(graphtype,'scatterplot')
     f1 = figure;
     scatter(yvar)
-    set('xticklabel',{'HOM', 'WT'});
-    xlabel('genotype')
+    xlabel('HOM')
+    ylabel(yname)
+    f2 = figure;
+     xlabel('WT')
     ylabel(yname)
     run = false;
 else 
