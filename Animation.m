@@ -1,4 +1,4 @@
-%Katie Yetter - started 3/3/21
+%Animation to see Neuromuscular Junction - started 3/3/21 (Katie Yetter)
 
 %Questions for TA: Is the legend okay?  Is the order of the code okay? 
 
@@ -9,11 +9,31 @@
 % Creating Animation
     %Display image overview experiment, as well as showing the sternomastoid muscle and wear it is located
         %This will be the original image presented
+
+%Screen set up: IS THIS NEEDED?
+Screen('Preference', 'SkipSyncTests',0); 
+ScreenTest;
+sca;
+close all;
+clear all;
+
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
-imread = ('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
-c(img)
-Axis image;
-Axis off;
+ifi = Screen('GetFlipInterval', window);
+rr = FrameRate(window);
+topPriorityLevel = MaxPriority(window);
+Priority(topPriorityLevel);
+[window, windowRect] = PsychImaging('OpenWindow', screenNumber, white);
+
+PsychDefaultSetup(2);
+[screenXpixels, screenYpixels] = Screen('WindowSize', window);
+the_img =imread('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
+[s1, s2, ~] = size(the_img);
+imageTexture = Screen('MakeTexture', window, the_img);
+Screen('DrawTexture', window, imageTexture, [], [], 0);
+Screen('Flip', window)
+KbStrokeWait;
+sca;
+
 
 %Legend for key press
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
@@ -25,7 +45,7 @@ DrawFormattedText(window, 'Press w for Deltalg3 Presynaptic Neuron') %Display De
 DrawFormattedText(window, 'Press e for WT Postsynaptic Neuron') %Display WT gene mouse (postsynaptic)
 DrawFormattedText(window, 'Press r for Deltalg3 Postsynaptic Neuron') %Display Deltalg3 gene  mouse (postsynaptic)
 DrawFormattedText(window, 'Press space to exit current image') 
-screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1]);
+screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];
 Screen('Flip', window);
 
 %Display instructions
@@ -37,7 +57,7 @@ Screen('Flip', window);
 
 while quit == false;
 image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg') %Bring up original image of experimental data
-
+end
 %Press a Key based on the legend to see a specific part of the neuromuscular junction
 answered = false;
 while ~answered
@@ -59,7 +79,7 @@ end
 
 %Display original image (Experimental Design) before closing application 
 
-[window, windowRect] = PsychImaging('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'), screenNumber, grey); %Bring up original image of experimental data
+[window, windowRect] = PsychImaging(('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'), screenNumber, grey); %Bring up original image of experimental data
 KbStrokeWait;
 Priority(0);
 sca; %This will close all windows
