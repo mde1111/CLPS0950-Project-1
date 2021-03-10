@@ -1,4 +1,4 @@
-%Animation to see Neuromuscular Junction - started 3/3/21 (Katie Yetter)
+%Animation: Neuromuscular Junction - started 3/3/21 (Katie Yetter)
 
 %Questions for TA: Is the legend okay?  Is the order of the code okay? 
 
@@ -10,22 +10,20 @@
     %Display image overview experiment, as well as showing the sternomastoid muscle and wear it is located
         %This will be the original image presented
 
-%Screen set up: IS THIS NEEDED?
-Screen('Preference', 'SkipSyncTests',0); 
-ScreenTest;
-sca;
-close all;
-clear all;
+        
+ %Help with this initial screen setup      
+
+screens = Screen('Screens');
+screenNumber = max(screens);
+[window, windowRect] = PsychImaging('OpenWindow', screenNumber, white);
 
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 ifi = Screen('GetFlipInterval', window);
 rr = FrameRate(window);
 topPriorityLevel = MaxPriority(window);
 Priority(topPriorityLevel);
-[window, windowRect] = PsychImaging('OpenWindow', screenNumber, white);
 
 PsychDefaultSetup(2);
-[screenXpixels, screenYpixels] = Screen('WindowSize', window);
 the_img =imread('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
 [s1, s2, ~] = size(the_img);
 imageTexture = Screen('MakeTexture', window, the_img);
@@ -34,18 +32,19 @@ Screen('Flip', window)
 KbStrokeWait;
 sca;
 
+%Start of Animation
 
 %Legend for key press
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 Screen('TextSize', window, 70);
 Screen('TextFont', window, 'Courier');
-DrawFormattedText(window, 'Legend')
-DrawFormattedText(window, 'Press  q for WT Presynaptic Neuron') %Display WT gene mouse (presynaptic) 
-DrawFormattedText(window, 'Press w for Deltalg3 Presynaptic Neuron') %Display Deltalg3 gene mouse (presynaptic)
-DrawFormattedText(window, 'Press e for WT Postsynaptic Neuron') %Display WT gene mouse (postsynaptic)
-DrawFormattedText(window, 'Press r for Deltalg3 Postsynaptic Neuron') %Display Deltalg3 gene  mouse (postsynaptic)
-DrawFormattedText(window, 'Press space to exit current image') 
-screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];
+DrawFormattedText(window, 'Legend');
+DrawFormattedText(window, 'Press  q for WT Presynaptic Neuron'); %Display WT gene mouse (presynaptic) 
+DrawFormattedText(window, 'Press w for Deltalg3 Presynaptic Neuron'); %Display Deltalg3 gene mouse (presynaptic)
+DrawFormattedText(window, 'Press e for WT Postsynaptic Neuron'); %Display WT gene mouse (postsynaptic)
+DrawFormattedText(window, 'Press r for Deltalg3 Postsynaptic Neuron'); %Display Deltalg3 gene  mouse (postsynaptic)
+DrawFormattedText(window, 'Press space to exit current image'); 
+screenXpixels, screenYpixels * 0.5, [0 0 1];
 Screen('Flip', window);
 
 %Display instructions
@@ -53,10 +52,31 @@ Screen('TextSize', window, 18);
 Screen('TextFont', window, 'Courier');
 DrawFormattedText(window, 'Instructions:', 18, 50, [0 0 0]);
 DrawFormattedText(window, 'Refer to the legend to choose which image you want to see!', 20, 50, [0 1 0]);
+DrawFormattedText(window,  'Press Space to close', 18, 50, [000]);
 Screen('Flip', window);
+rt = [];
+respKey = [];
+hasAnswered =  false;
+while ~hasAnswered
+    [keyIsDown,secs,keycode] = KbCheck;
+    if keyIsdown
+        if keyCode(space)
+            ShowCursor;
+            sca;
+            return
+        else
+            hasAnswered = true;
+            tEnd =  GetSecs;
+        end
+    end
+    respKey = [respKey; KbName(keyCode)];
+    rt = [rt; tEnd -  tStart];
+    WaitSecs(2)
+end
 
-while quit == false;
-image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg') %Bring up original image of experimental data
+
+while quit == false
+image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Bring up original image of experimental data
 end
 %Press a Key based on the legend to see a specific part of the neuromuscular junction
 answered = false;
@@ -64,13 +84,13 @@ while ~answered
 [keyIsDown, secs, keyCode] = KbCheck;
 if keyIsDown
   if strcmp(KbName(keyCode),'q') %check for key press
-    image = loadimage('wildtype_presynaptic.jpg') %Display WT gene mouse (presynaptic) 
+    image = loadimage('wildtype_presynaptic.jpg'); %Display WT gene mouse (presynaptic) 
   elseif strcmp(KbName(keyCode),'w') %check for key press
-    image = loadimage('deltalg3_presynaptic.jpg') %Display Deltalg3 gene mouse (presynaptic)
+    image = loadimage('deltalg3_presynaptic.jpg'); %Display Deltalg3 gene mouse (presynaptic)
   elseif strcmp(KbName(keyCode),'e') %check for key press
-    image = loadimage('wildtype_postsynaptic.jpg') %Display WT gene mouse (postsynaptic)
+    image = loadimage('wildtype_postsynaptic.jpg'); %Display WT gene mouse (postsynaptic)
   elseif strcmp(KbName(keyCode),'r') %check for key press
-    image = loadimage('deltalg3_postsynaptic') %Display Deltalg3 gene mouse (postsynaptic)
+    image = loadimage('deltalg3_postsynaptic'); %Display Deltalg3 gene mouse (postsynaptic)
   elseif strcmp(KbName(keyCode),'space') %Exit current image
     quit = true;
     break
