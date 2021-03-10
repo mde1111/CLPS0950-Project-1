@@ -6,15 +6,6 @@ while run == true
 muscle = input('Which muscle (STM, SOL, EDL) data are you interested in?','s');
 
 if strcmp(muscle,'STM')
-    x = input('Would you like to analyze this data at a "specific time interval" or "over time?"','s');
-        a = "D:\Users\mariarodriguez\MATLAB\projects\cs\monthSTMdata.csv";
-        b = "D:\Users\mariarodriguez\MATLAB\projects\cs\monthSTMdata1.csv";
-        c = "D:\Users\mariarodriguez\MATLAB\projects\cs\P14STMdata.csv";
-        d = "D:\Users\mariarodriguez\MATLAB\projects\cs\P21STMdata.csv";
-        e = "D:\Users\mariarodriguez\MATLAB\projects\cs\P30STMdata.csv";
-        f = "D:\Users\mariarodriguez\MATLAB\projects\cs\yearSTMdata.csv";
-    if strcmp(x,'over time')
-        xvar = [14, 21, 30, 90, 420, 720];
         disp('For the following question, type one of the following options:')
         disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
         yvar = input('Which variable data would you like to see?','s');
@@ -45,12 +36,21 @@ if strcmp(muscle,'STM')
         else
         disp('Invalid entry. Please try again.')
         end 
-        y1 = readtable(a(:,n));
-        y2 = readtable(b(:,n));
-        y3 = readtable(c(:,n));
-        y4 = readtable(d(:,n));
-        y5 = readtable(e(:,n));
-        y6 = readtable(f(:,n));
+    x = input('Would you like to analyze this data at a "specific time interval" or "over time?"','s');
+        a = monthSTMdata.csv;
+        b = monthSTMdata1.csv;
+        c = P14STMdata.csv;
+        d = P21STMdata.csv;
+        e = P30STMdata.csv;
+        f = yearSTMdata.csv;
+    if strcmp(x,'over time')
+        xvar = [14, 21, 30, 90, 420, 720];
+        y1 = table2cell(a(:,n));
+        y2 = table2cell(b(:,n));
+        y3 = table2cell(c(:,n));
+        y4 = table2cell(d(:,n));
+        y5 = table2cell(e(:,n));
+        y6 = table2cell(f(:,n));
         gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
         if strcmp(gtype, 'scatterplot')
             scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6);
@@ -61,54 +61,43 @@ if strcmp(muscle,'STM')
             run = false;
         end
         
-    elseif strcmp(x, 'specific time interval')
-        %verify the command xticklabel format 
+    elseif strcmp(x, 'specific time interval') 
         time = input('Would you like to analyze data at 14 days, 21 days, 1 month, 3 months, 14 months, or 2 years?','s');
             if strcmp(time, '14 days')
                 table = P14STMdata;
+                [r,s] = size(table)
                 %add option of M/F or WT/HOM
                 disp('For this time interval we have male and female data.')
                 m = input('Would you like to plot based on "gender" or "genotype"?','s');
                     if strcmp(m,'gender')
-                        xvar = [M, F];
                         %code to get data for male into M and female into F
-                        %code for y axis
-                        disp('For the following question, type one of the following options:')
-                        disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
-                        yvar = input('Which variable data would you like to see?','s');
-                            if strcmp(yvar, 'nerve terminal perimeter')
-                                n = 2;
-                            elseif strcmp(yvar, 'nerve terminal area')
-                                n = 3;
-                            elseif strcmp(yvar,'total length of branches')
-                                n = 4;
-                            elseif strcmp(yvar, 'average length of branches')
-                                n = 5;
-                            elseif strcmp(yvar, 'complexity')
-                                n = 6;
-                            elseif strcmp(yvar,'AChR perimeter' )
-                                n = 7;
-                            elseif strcmp(yvar, 'AChR area')
-                                n = 8;
-                            elseif strcmp(yvar, 'area of synaptic contact')
-                                n = 14;
-                            elseif strcmp(yvar, 'overlap' )
-                                n = 15;
-                            elseif strcmp(yvar,'manual end plate data' )
-                                n = 16;
-                            elseif strcmp(yvar, 'manual compactness')
-                                n = 17;
-                            elseif strcmp(yvar, 'fragmentation')
-                                n = 18;
+                        type = table2cell(table(:,21))
+                        tp = monthEDLdata;
+                        disp(type)
+                        gM = []
+                        gF =[]
+                        F = 0
+                        M = 0
+                        for ii = 1:r
+                            A = type{ii}
+                            A = string(A)
+                            if strcmp(A,'M')
+                                M = M +1
+                                t = table2cell(tp(ii,yvar));
+                                gen = [gen, t]
                             else
-                                disp('Invalid entry. Please try again.')
-                            end 
-                            y1 = readtable(a(:,n));
-                            y2 = readtable(b(:,n));
-                            y3 = readtable(c(:,n));
-                            y4 = readtable(d(:,n));
-                            y5 = readtable(e(:,n));
-                            y6 = readtable(f(:,n));
+                                F = F+1
+                                t = table2cell(tp(ii,yvar));
+                                gwt = [gwt, t]
+                            end
+                        end
+                           
+                            y1 = table2cell(a(:,n));
+                            y2 = table2cell(b(:,n));
+                            y3 = table2cell(c(:,n));
+                            y4 = table2cell(d(:,n));
+                            y5 = table2cell(e(:,n));
+                            y6 = table2cell(f(:,n));
                             gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
                             if strcmp(gtype, 'scatterplot')
                                 scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
@@ -129,42 +118,12 @@ if strcmp(muscle,'STM')
                    %code to get data for male into M and female into F
                    xvar = [M, F];
                    %code for y axis
-                   disp('For the following question, type one of the following options:')
-                   disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
-                   yvar = input('Which variable data would you like to see?','s');
-                            if strcmp(yvar, 'nerve terminal perimeter')
-                                n = 2;
-                            elseif strcmp(yvar, 'nerve terminal area')
-                                n = 3;
-                            elseif strcmp(yvar,'total length of branches')
-                                n = 4;
-                            elseif strcmp(yvar, 'average length of branches')
-                                n = 5;
-                            elseif strcmp(yvar, 'complexity')
-                                n = 6;
-                            elseif strcmp(yvar,'AChR perimeter' )
-                                n = 7;
-                            elseif strcmp(yvar, 'AChR area')
-                                n = 8;
-                            elseif strcmp(yvar, 'area of synaptic contact')
-                                n = 14;
-                            elseif strcmp(yvar, 'overlap' )
-                                n = 15;
-                            elseif strcmp(yvar,'manual end plate data' )
-                                n = 16;
-                            elseif strcmp(yvar, 'manual compactness')
-                                n = 17;
-                            elseif strcmp(yvar, 'fragmentation')
-                                n = 18;
-                            else
-                                disp('Invalid entry. Please try again.')
-                            end 
-                            y1 = readtable(a(:,n));
-                            y2 = readtable(b(:,n));
-                            y3 = readtable(c(:,n));
-                            y4 = readtable(d(:,n));
-                            y5 = readtable(e(:,n));
-                            y6 = readtable(f(:,n));
+                            y1 = table2cell(a(:,n));
+                            y2 = table2cell(b(:,n));
+                            y3 = table2cell(c(:,n));
+                            y4 = table2cell(d(:,n));
+                            y5 = table2cell(e(:,n));
+                            y6 = table2cell(f(:,n));
                             gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
                             if strcmp(gtype, 'scatterplot')
                                 scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
@@ -190,43 +149,13 @@ if strcmp(muscle,'STM')
                        xvar = [WT, HOM];
                    end
                    %code to get data for male into M and female into F
-                   %code for y axis 
-                           disp('For the following question, type one of the following options:')
-                           disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
-                           yvar = input('Which variable data would you like to see?','s');
-                            if strcmp(yvar, 'nerve terminal perimeter')
-                                n = 2;
-                            elseif strcmp(yvar, 'nerve terminal area')
-                                n = 3;
-                            elseif strcmp(yvar,'total length of branches')
-                                n = 4;
-                            elseif strcmp(yvar, 'average length of branches')
-                                n = 5;
-                            elseif strcmp(yvar, 'complexity')
-                                n = 6;
-                            elseif strcmp(yvar,'AChR perimeter' )
-                                n = 7;
-                            elseif strcmp(yvar, 'AChR area')
-                                n = 8;
-                            elseif strcmp(yvar, 'area of synaptic contact')
-                                n = 14;
-                            elseif strcmp(yvar, 'overlap' )
-                                n = 15;
-                            elseif strcmp(yvar,'manual end plate data' )
-                                n = 16;
-                            elseif strcmp(yvar, 'manual compactness')
-                                n = 17;
-                            elseif strcmp(yvar, 'fragmentation')
-                                n = 18;
-                            else
-                                disp('Invalid entry. Please try again.')
-                            end 
-                            y1 = readtable(a(:,n));
-                            y2 = readtable(b(:,n));
-                            y3 = readtable(c(:,n));
-                            y4 = readtable(d(:,n));
-                            y5 = readtable(e(:,n));
-                            y6 = readtable(f(:,n));
+                   %code for y axis  
+                            y1 = table2cell(a(:,n));
+                            y2 = table2cell(b(:,n));
+                            y3 = table2cell(c(:,n));
+                            y4 = table2cell(d(:,n));
+                            y5 = table2cell(e(:,n));
+                            y6 = table2cell(f(:,n));
                             gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
                             if strcmp(gtype, 'scatterplot')
                                 scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
@@ -249,12 +178,20 @@ if strcmp(muscle,'STM')
         disp('Invalid entry. Please enter a valid entry.')
         run = false;
     end
-              
+          
+%from here down it's all good!    
+    
 elseif strcmp(muscle,'SOL')
     table = "D:\Users\mariarodriguez\MATLAB\projects\cs\monthSOLdata.csv";
+    table = monthSOLdata;
+    type = monthSOLdata;
+    t = monthSOLdata;
     
 elseif strcmp(muscle,'EDL')
     table = "D:\Users\mariarodriguez\MATLAB\projects\cs\monthEDLdata.csv";
+    table = monthEDLdata;
+    type = monthEDLdata;
+    t = monthSOLdata;
 else 
     disp('Invalid entry. Please enter a valid muscle name.')
 end
@@ -266,55 +203,97 @@ disp('nerve terminal perimeter, nerve terminal area, total length of branches, a
 yvar = input('Which varibale data would you like to see?','s');
 yname = yvar;
     if strcmp(yvar, 'nerve terminal perimeter')
-        yvar = readtable(table(:,2));
+        yvar = 2;
     elseif strcmp(yvar, 'nerve terminal area')
-        yvar = readtable(table(:,3));
+        yvar = 3;
     elseif strcmp(yvar,'total length of branches')
-        yvar = readtable(table(:,4));
+        yvar = 4;
     elseif strcmp(yvar, 'average length of branches')
-        yvar = readtable(table(:,5));
+        yvar = 5;
     elseif strcmp(yvar, 'complexity')
-        yvar = readtable(table(:,6));
+        yvar = 6;
     elseif strcmp(yvar,'AChR perimeter' )
-        yvar = readtable(table(:,7));
+        yvar = 7;
     elseif strcmp(yvar, 'AChR area')
-        yvar = readtable(table(:,8));
+        yvar = 8;
     elseif strcmp(yvar, 'area of synaptic contact')
-        yvar = readtable(table(:,14));
+        yvar = 14;
     elseif strcmp(yvar, 'overlap' )
-        yvar = readtable(table(:,15));
+        yvar = 15;
     elseif strcmp(yvar,'manual end plate data' )
-        yvar = readtable(table(:,16));
+        yvar = 16;
     elseif strcmp(yvar, 'manual compactness')
-        yvar = readtable(table(:,17));
+        yvar = 17;
     elseif strcmp(yvar, 'fragmentation')
-        yvar = readtable(table(:,18));
+        yvar = 18;
     else
         disp('Invalid entry. Please try again.')
     end       
 
 %determine graphtype
-disp('For the following question, type one of the following options: bar, scatterplot')
+disp('For the following question, type one of the following options: bar, line')
 graphtype = input('What type of graph would you like?','s');
-%%code to differentiate between HOM data and WT data and separate them
-%%if genotype(column 20) = HOM or WT
-%HOMyvar = 
-%WTyvar =
-if strcmp(graphytype,'bar')
-    %take average of all values for each category (WT/HOM)
-    f1 = figure;
-    bar(yvar,0.5)
-    set('xticklabel',{'HOM', 'WT'});
-    xlabel('genotype')
-    ylabel(yname)
-    run = false;
-elseif strcmp(graphtype,'scatterplot')
-    f1 = figure;
-    scatter(yvar)
+%variables to make plot code work, need to reset every new plot made
+    type = table2cell(type(:,20));
+    gen = [];
+    gwt =[];
+    hom =1;
+    wt =1;
+    %code to divide between HOM and WT
+    for ii = 1:n
+        A = type{ii};
+        A = string(A);
+        if strcmp(A,'HOM')
+            hom = hom +1;
+            t = table2cell(table(ii,yvar));
+            gen = [gen, t];
+        else
+            wt = wt+1;
+            t = table2cell(table(ii,yvar));
+            gwt = [gwt, t];
+        end
+    end
+    
+if strcmp(graphtype,'bar')
+    aveg = mean(genp);
+    %plot WT Bar
+    for jj = 1:hom-1
+    genp = [genp gen{jj}(:)];
+    end
+    f2 = figure
+    genp = mean(genp);
+    bar(genp)
     xlabel('HOM')
     ylabel(yname)
-    f2 = figure;
-     xlabel('WT')
+    
+    %plot HOM Bar
+    for kk = 1:wt-1
+    gwtp = [gwtp gwt{kk}(:)];
+    end
+    f3 = figure
+    gwtp = mean(gwtp);
+    bar(gwtp)
+    xlabel('WT')
+    ylabel(yname)
+    run = false;
+    
+elseif strcmp(graphtype,'line')
+    %plot WT Line
+    for jj = 1:hom-1
+    genp = [genp gen{jj}(:)];
+    end
+    f2 = figure
+    plot(genp)
+    xlabel('HOM')
+    ylabel(yname)
+    
+    %plot HOM Line
+    for kk = 1:wt-1
+    gwtp = [gwtp gwt{kk}(:)];
+    end
+    f3 = figure
+    plot(gwtp)
+    xlabel('WT')
     ylabel(yname)
     run = false;
 else 
@@ -322,6 +301,8 @@ else
 end
 
 end
+
+
 %to view additional graphs
 another = input('Would you like to request an additional graph? (yes/no)','s');
 if strcmp(another,'yes')
