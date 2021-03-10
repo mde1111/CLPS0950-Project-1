@@ -1,6 +1,6 @@
 %Animation: Neuromuscular Junction Images - started 3/3/21 (Katie Yetter)
 
-%Notes
+                                  %Notes
     % 1. Four images: All are 3 month male sternomastoid images: animal524_40x_03 from a HOM (Deltalg3) and animal551_40x_02 from a WT gene.
     % 2. Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
     
@@ -10,7 +10,7 @@
    %genes within the mice.
    % 2. The sternomastoid muscle is where these neurons are located
 
-                        % Set Screen Preferences/Background Image
+                % Set Screen Preferences/Background Image
 Screen('Preference', 'VisualDebuglevel', 3);
 screens = Screen('Screens');
 screenNumber = max(screens);
@@ -29,7 +29,7 @@ rr = FrameRate(window);
 Screen('TextSize', window, 20);
 Screen('TextFont', window, 'Courier');
 DrawFormattedText(window, 'Instructions: \n \nRefer to the legend to choose which image you want to see! \n \nPress space to close.', 18, 50, [0 0 1]);
-screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];
+screenXpixels * 0.5; screenYpixels * 0.5; [0 0 1];
 Screen('Flip', window);
 continueKey = KbName('space');
 hasAnswered = false;
@@ -56,21 +56,19 @@ Screen('Flip', window)
 %[screenXpixels, screenYpixels] = Screen('WindowSize', window);
 Screen('TextSize', window, 30);
 Screen('TextFont', window, 'Courier');
-screenXpixels * 0.5, screenYpixels * 0.5, [0 1 0];  
+screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];  
 DrawFormattedText(window, 'Legend');
 DrawFormattedText(window, 'Press q for WT Presynaptic Neuron \n \nPress w for Deltalg3 Presynaptic Neuron \n \nPress e for WT Postsynaptic Neuron \n \nPress r for Deltalg3 Postsynaptic Neuron \n \nPress space to exit current image'); 
-%Display WT gene mouse  photo (presynaptic) 
-%Display Deltalg3 gene mouse photo (presynaptic)
-%Display WT gene mouse photo (postsynaptic)
-%Display Deltalg3 gene mouse photo (postsynaptic)
-  
-Screen('Flip', window);
-KbStrokeWait;
-  
+    %Display WT gene mouse  photo (presynaptic) 
+    %Display Deltalg3 gene mouse photo (presynaptic)
+    %Display WT gene mouse photo (postsynaptic)
+    %Display Deltalg3 gene mouse photo (postsynaptic)
 while quit == false
 image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Bring up original image of experimental data
-end
-
+end  
+Screen('Flip', window);
+KbStrokeWait;
+   
     %Press a Key based on the legend to see a specific part of the neuromuscular junction
 answered = false;
 while ~answered
