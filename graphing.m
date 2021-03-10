@@ -402,13 +402,14 @@ end
 disp('For the following question, type one of the following options: bar, line')
 graphtype = input('What type of graph would you like?','s');
 %variables to make plot code work, need to reset every new plot made
+    [z,x] = size(table);
     type = table2cell(type(:,20));
     gen = [];
     gwt =[];
     hom =0;
     wt =0;
     %code to divide between HOM and WT
-    for ii = 1:n
+    for ii = 1:z
         A = type{ii};
         A = string(A);
         if strcmp(A,'HOM')
