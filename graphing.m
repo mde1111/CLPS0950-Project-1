@@ -1,5 +1,7 @@
 %should I also add the option of view all v chose your own?
 run = true;
+skipy = true;
+next = true;
 %ask which muscle they would like to view the data and read data for that muscle 
 while run == true 
 muscle = input('Which muscle (STM, SOL, EDL) data are you interested in?','s');
@@ -33,8 +35,6 @@ if strcmp(muscle,'STM')
             n = 17;
         elseif strcmp(yvar, 'fragmentation')
             n = 18;
-        else
-        disp('Invalid entry. Please try again.')
         end 
     x = input('Would you like to analyze this data at a "specific time interval" or "over time?"','s');
     if strcmp(x,'over time')
@@ -108,7 +108,7 @@ if strcmp(muscle,'STM')
             xticklabels({'14','21','30','90','420','720'})
             xlabel('time in days')
             ylabel(yname)
-            skipy = false;
+            next = false;
         else
             f0 = figure
             bar(yvar)
@@ -116,16 +116,16 @@ if strcmp(muscle,'STM')
             xticklabels({'14','21','30','90','420','720'})
             xlabel('time in days')
             ylabel(yname)
-            skipy = false;
+            next = false;
         end
-        skipy = false;
+        next = false;
     elseif strcmp(x, 'specific time interval') 
         time = input('Would you like to analyze data at 14 days, 21 days, 1 month, 3 months, 14 months, or 2 years?','s');
             if strcmp(time, '14 days')
                 table = P14STMdata;
                 type = P14STMdata;
                 t = P14STMdata;
-                [r,s] = size(table)
+                [r,s] = size(table);
                 %add option of M/F or WT/HOM
                 disp('For this time interval we have male and female data.')
                 m = input('Would you like to plot based on "gender" or "genotype"?','s');
@@ -152,7 +152,7 @@ if strcmp(muscle,'STM')
                             end
                         end
 
-                            gtype = input('Would you like to see the results in a "line" or "bar" graph?','s');
+                    gtype = input('Would you like to see the results in a "line" or "bar" graph?','s');
                               gFp = [];
                               gMp = [];
                               for jj = 1:F
@@ -167,8 +167,9 @@ if strcmp(muscle,'STM')
                                     plot(gFp)
                                     hold on
                                     plot(gMp)
-                                    skipy = false
-                            else
+                                    ylabel(yname)
+                                    next = false
+                            elseif strcmp(gtype, 'bar')
                                     f0 = figure
                                     gMp = mean(gMp);
                                     gFp = mean(gFp);
@@ -177,9 +178,13 @@ if strcmp(muscle,'STM')
                                     xlabel('gender')
                                     xticklabels({'M','F'})
                                     ylabel(yname)
-                                    skipy = false
+                                    next = false
                             end
-                    end 
+                    else 
+                        yvar = n;
+                        skipy = false;
+                    end
+
             elseif strcmp(time, '21 days')
                 table = P21STMdata;
                 type = P21STMdata;
@@ -225,8 +230,9 @@ if strcmp(muscle,'STM')
                                    f0 = figure
                                     plot(gFp)
                                     hold on
-                                    plot(gMp)                                  
-                            else
+                                    plot(gMp) 
+                                   next = false;
+                            elseif strcmp(gtype, 'bar')
                                     f0 = figure
                                     gMp = mean(gMp);
                                     gFp = mean(gFp);
@@ -235,13 +241,16 @@ if strcmp(muscle,'STM')
                                     xlabel('gender')
                                     xticklabels({'M','F'})
                                     ylabel(yname)
+                                    next = false;
                             end
-                    end 
-            skipy = false;
+                    else
+                        yvar = n;
+                        skipy = false;
+                    end
             elseif strcmp(time, '3 months')
-                table = P30STMdata;
-                type = P30STMdata;
-                t = P30STMdata;
+                table = x3monthSTMdata2;
+                type = x3monthSTMdata2;
+                t = x3monthSTMdata2;
                [r,s] = size(table);
                %add option of M/F or WT/HOM
                 disp('For this time interval we have male and female data.')
@@ -282,8 +291,9 @@ if strcmp(muscle,'STM')
                                    f0 = figure
                                     plot(gFp)
                                     hold on
-                                    plot(gMp)     
-                            else
+                                    plot(gMp)    
+                                    next = false;
+                            elseif strcmp(gtype, 'bar')
                                     f0 = figure
                                     gMp = mean(gMp);
                                     gFp = mean(gFp);
@@ -292,25 +302,33 @@ if strcmp(muscle,'STM')
                                     xlabel('gender')
                                     xticklabels({'M','F'})
                                     ylabel(yname)
+                                    next = false;       
                             end
+                    else
+                        yvar = n;
+                        skipy =  false;
                     end  
-            skipy = false;
-            elseif strcmp(time, '3 months')
-                table = P30STMdata;
-                type = P30STMdata;
-                t = P30STMdata;
-            elseif strcmp(time, '14 months')
-                table = monthSTMdata1;
-                type = monthSTMdata1;
-                t = monthSTMdata1;
-            elseif strcmp(time, '2 years')
-                table = yearSTMdata;
-                type = yearSTMdata;
-                t = yearSTMdata;
             elseif strcmp(time, '1 month')
                 table = P30STMdata;
                 type = P30STMdata;
                 t = P30STMdata;
+                yvar = n;
+                next = true;
+                skipy = false;
+            elseif strcmp(time, '14 months')
+                table = x14moSTMdata1;
+                type = x14moSTMdata1;
+                t = x14moSTMdata1;
+                yvar = n;
+                next = true;
+                skipy = false;
+            elseif strcmp(time, '2 years')
+                table = yearSTMdata;
+                type = yearSTMdata;
+                t = yearSTMdata;
+                yvar = n;
+                next = true;
+                skipy = false;
             else
                 disp('Invalid entry. Please enter valid entry.')
             end
@@ -327,16 +345,22 @@ elseif strcmp(muscle,'SOL')
     table = monthSOLdata;
     type = monthSOLdata;
     t = monthSOLdata;
+    next = true;
+    skipy = true;
     
 elseif strcmp(muscle,'EDL')
     table = "D:\Users\mariarodriguez\MATLAB\projects\cs\monthEDLdata.csv";
     table = monthEDLdata;
     type = monthEDLdata;
     t = monthSOLdata;
+    next = true;
+    skipy = true;
 else 
     disp('Invalid entry. Please enter a valid muscle name.')
+    run = false;
 end
 
+while next == true
 while skipy == true
 % ask for y variable
 disp('For the following question, type one of the following options:')
@@ -369,7 +393,10 @@ yname = yvar;
         yvar = 18;
     else
         disp('Invalid entry. Please try again.')
-    end       
+        run = false;
+    end  
+skipy = false;
+end
 
 %determine graphtype
 disp('For the following question, type one of the following options: bar, line')
@@ -378,8 +405,8 @@ graphtype = input('What type of graph would you like?','s');
     type = table2cell(type(:,20));
     gen = [];
     gwt =[];
-    hom =1;
-    wt =1;
+    hom =0;
+    wt =0;
     %code to divide between HOM and WT
     for ii = 1:n
         A = type{ii};
@@ -396,20 +423,21 @@ graphtype = input('What type of graph would you like?','s');
     end
     
 if strcmp(graphtype,'bar')
-    aveg = mean(genp);
     %plot WT Bar
-    for jj = 1:hom-1
+    genp = [];
+    for jj = 1:hom
     genp = [genp gen{jj}(:)];
     end
     f2 = figure
-    subplot(1,2,1)
     genp = mean(genp);
+    subplot(1,2,1)
     bar(genp)
     xlabel('HOM')
     ylabel(yname)
     
     %plot HOM Bar
-    for kk = 1:wt-1
+    gwtp = [];
+    for kk = 1:wt
     gwtp = [gwtp gwt{kk}(:)];
     end
     subplot(1,2,2)
@@ -420,7 +448,7 @@ if strcmp(graphtype,'bar')
     
 elseif strcmp(graphtype,'line')
     %plot WT Line
-    for jj = 1:hom-1
+    for jj = 1:hom
     genp = [genp gen{jj}(:)];
     end
     f2 = figure
@@ -430,7 +458,7 @@ elseif strcmp(graphtype,'line')
     ylabel(yname)
     
     %plot HOM Line
-    for kk = 1:wt-1
+    for kk = 1:wt
     gwtp = [gwtp gwt{kk}(:)];
     end
     subplot(1,2,2)
@@ -440,18 +468,21 @@ elseif strcmp(graphtype,'line')
 
 else 
     disp('Invalid entry, please try again.')
+    run = false;
 end
-
-%skipy end
+next = false;
+%end for next
 end
 
 %to view additional graphs
 another = input('Would you like to request an additional graph? (yes/no)','s');
 if strcmp(another,'yes')
     run = true;
+    next = true;
+    skipy = true;
     %ask questions again
 else
-    disp('Hope this helped!')
+    disp('Hope this helps!')
     run = false;
 end
 end
