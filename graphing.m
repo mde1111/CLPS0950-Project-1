@@ -1,5 +1,4 @@
 %should I also add the option of view all v chose your own?
-
 run = true;
 %ask which muscle they would like to view the data and read data for that muscle 
 while run == true 
@@ -9,6 +8,7 @@ if strcmp(muscle,'STM')
         disp('For the following question, type one of the following options:')
         disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
         yvar = input('Which variable data would you like to see?','s');
+        yname = yvar
         if strcmp(yvar, 'nerve terminal perimeter')
             n = 2;
         elseif strcmp(yvar, 'nerve terminal area')
@@ -37,34 +37,94 @@ if strcmp(muscle,'STM')
         disp('Invalid entry. Please try again.')
         end 
     x = input('Would you like to analyze this data at a "specific time interval" or "over time?"','s');
-        a = monthSTMdata.csv;
-        b = monthSTMdata1.csv;
-        c = P14STMdata.csv;
-        d = P21STMdata.csv;
-        e = P30STMdata.csv;
-        f = yearSTMdata.csv;
     if strcmp(x,'over time')
         xvar = [14, 21, 30, 90, 420, 720];
-        y1 = table2cell(a(:,n));
-        y2 = table2cell(b(:,n));
-        y3 = table2cell(c(:,n));
-        y4 = table2cell(d(:,n));
-        y5 = table2cell(e(:,n));
-        y6 = table2cell(f(:,n));
-        gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
-        if strcmp(gtype, 'scatterplot')
-            scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6);
-            run = false;
+        yvar = []
+        a = monthSTMdata;
+            a = table2cell(a(:,n))
+            [r,s] = size(a)
+            values = []
+            for ii = 1:r
+            values = [values a{ii}(:)]
+            end
+            va = values
+            va = mean(va)
+            yvar = [yvar va]
+        b = monthSTMdata1;
+            b = table2cell(b(:,n))
+            [r,s] = size(b)
+            values = []
+            for ii = 1:r
+            values = [values b{ii}(:)]
+            end
+            vb = values
+            vb = mean(vb)
+            yvar = [yvar vb]
+        c = P14STMdata;
+            c = table2cell(c(:,n))
+            [r,s] = size(c)
+            values = []
+            for ii = 1:r
+            values = [values c{ii}(:)]
+            end
+            vc = values
+            vc = mean(vc)
+            yvar = [yvar vc]
+        d = P21STMdata;
+            d = table2cell(d(:,n))
+            [r,s] = size(d)
+            values = []
+            for ii = 1:r
+            values = [values d{ii}(:)]
+            end
+            vd = values
+            vd = mean(vd)
+            yvar = [yvar vd]
+        e = P30STMdata;
+            e = table2cell(e(:,n))
+            [r,s] = size(e)
+            values = []
+            for ii = 1:r
+            values = [values e{ii}(:)]
+            end
+            ve = values
+            ve = mean(ve)
+            yvar = [yvar ve]
+        f = yearSTMdata;
+            f = table2cell(f(:,n))
+            [r,s] = size(f)
+            values = []
+            for ii = 1:r
+            values = [values f{ii}(:)]
+            end
+            vf = values  
+            vf = mean(vf)
+            yvar = [yvar vf]
+        gtype = input('Would you like to see the results in a line or bar graph?','s');
+        if strcmp(gtype, 'line')
+            f0 = figure
+            plot(yvar)
+            xticks(xvar)
+            xticklabels({'14','21','30','90','420','720'})
+            xlabel('time in days')
+            ylabel(yname)
+            skipy = false
         else
-            plot(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-            %exit script until the part where it ask to view another graph
-            run = false;
+            f0 = figure
+            bar(yvar)
+            xticks(xvar)
+            xticklabels({'14','21','30','90','420','720'})
+            xlabel('time in days')
+            ylabel(yname)
+            skipy = false
         end
-        
+        skipy = false
     elseif strcmp(x, 'specific time interval') 
         time = input('Would you like to analyze data at 14 days, 21 days, 1 month, 3 months, 14 months, or 2 years?','s');
             if strcmp(time, '14 days')
                 table = P14STMdata;
+                type = P14STMdata;
+                t = P14STMdata;
                 [r,s] = size(table)
                 %add option of M/F or WT/HOM
                 disp('For this time interval we have male and female data.')
@@ -72,7 +132,7 @@ if strcmp(muscle,'STM')
                     if strcmp(m,'gender')
                         %code to get data for male into M and female into F
                         type = table2cell(table(:,21))
-                        tp = monthEDLdata;
+                        tp = P14STMdata;
                         disp(type)
                         gM = []
                         gF =[]
@@ -83,101 +143,237 @@ if strcmp(muscle,'STM')
                             A = string(A)
                             if strcmp(A,'M')
                                 M = M +1
-                                t = table2cell(tp(ii,yvar));
-                                gen = [gen, t]
+                                t = table2cell(tp(ii,n));
+                                gM = [gM, t]
                             else
                                 F = F+1
-                                t = table2cell(tp(ii,yvar));
-                                gwt = [gwt, t]
+                                t = table2cell(tp(ii,n));
+                                gF = [gF, t]
                             end
                         end
-                           
-                            y1 = table2cell(a(:,n));
-                            y2 = table2cell(b(:,n));
-                            y3 = table2cell(c(:,n));
-                            y4 = table2cell(d(:,n));
-                            y5 = table2cell(e(:,n));
-                            y6 = table2cell(f(:,n));
-                            gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
-                            if strcmp(gtype, 'scatterplot')
-                                scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-                                %exit script until the part where it ask to view another graph
-                                run = false;
+
+                            gtype = input('Would you like to see the results in a "line" or "bar" graph?','s');
+                              gFp = []
+                              gMp = []
+                              for jj = 1:F
+                                    gFp = [gFp gF{jj}(:)];
+                              end
+
+                              for kk = 1:M
+                                    gMp = [gMp gM{kk}(:)];
+                              end
+                            if strcmp(gtype, 'line')
+                                   f0 = figure
+                                    plot(gFp)
+                                    hold on
+                                    plot(gMp)
+                                    skipy = false
                             else
-                                plot(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-                                %exit script until the part where it ask to view another graph
-                                run = false;
+                                    f0 = figure
+                                    gMp = mean(gMp)
+                                    gFp = mean(gFp)
+                                    y = [gMp, gFp]
+                                    bar(y)
+                                    xlabel('gender')
+                                    xticklabels({'M','F'})
+                                    ylabel(yname)
+                                    skipy = false
                             end
                     end 
+            elseif strcmp(time, '3 months')
+                table = P30STMdata;
+                type = P30STMdata;
+                t = P30STMdata;
+               [r,s] = size(table)
+               %add option of M/F or WT/HOM
+                disp('For this time interval we have male and female data.')
+                m = input('Would you like to plot based on "gender" or "genotype"?','s');
+                    if strcmp(m,'gender')
+                        %code to get data for male into M and female into F
+                        type = table2cell(table(:,21))
+                        tp = P30STMdata;
+                        disp(type)
+                        gM = []
+                        gF =[]
+                        F = 0
+                        M = 0
+                        for ii = 1:r
+                            A = type{ii}
+                            A = string(A)
+                            if strcmp(A,'M')
+                                M = M +1
+                                t = table2cell(tp(ii,n));
+                                gM = [gM, t]
+                            else
+                                F = F+1
+                                t = table2cell(tp(ii,n));
+                                gF = [gF, t]
+                            end
+                        end
+                            gtype = input('Would you like to see the results in a "line" or "bar" graph?','s');
+                              gFp = []
+                              gMp = []
+                              for jj = 1:F
+                                    gFp = [gFp gF{jj}(:)];
+                              end
+
+                              for kk = 1:M
+                                    gMp = [gMp gM{kk}(:)];
+                              end
+                            if strcmp(gtype, 'line')
+                                   f0 = figure
+                                    plot(gFp)
+                                    hold on
+                                    plot(gMp)
+                                    skipy = false
+                            else
+                                    f0 = figure
+                                    gMp = mean(gMp)
+                                    gFp = mean(gFp)
+                                    y = [gMp, gFp]
+                                    bar(y)
+                                    xlabel('gender')
+                                    xticklabels({'M','F'})
+                                    ylabel(yname)
+
+                            end
+                    end   
+           skipy = false        
             elseif strcmp(time, '21 days')
                 table = P21STMdata;
+                type = P21STMdata;
+                t = P21STMdata;
+                [r,s] = size(table)
                 %add option of M/F or WT/HOM
-                 disp('For this time interval we have male and female data.')
+                disp('For this time interval we have male and female data.')
                 m = input('Would you like to plot based on "gender" or "genotype"?','s');
-                   if strcmp(m,'gender')
-                   %code to get data for male into M and female into F
-                   xvar = [M, F];
-                   %code for y axis
-                            y1 = table2cell(a(:,n));
-                            y2 = table2cell(b(:,n));
-                            y3 = table2cell(c(:,n));
-                            y4 = table2cell(d(:,n));
-                            y5 = table2cell(e(:,n));
-                            y6 = table2cell(f(:,n));
-                            gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
-                            if strcmp(gtype, 'scatterplot')
-                                scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-                                %exit script until the part where it ask to view another graph
-                                run = false;
+                    if strcmp(m,'gender')
+                        %code to get data for male into M and female into F
+                        type = table2cell(table(:,21))
+                        tp = P21STMdata;
+                        disp(type)
+                        gM = []
+                        gF =[]
+                        F = 0
+                        M = 0
+                        for ii = 1:r
+                            A = type{ii}
+                            A = string(A)
+                            if strcmp(A,'M')
+                                M = M +1
+                                t = table2cell(tp(ii,n));
+                                gM = [gM, t];
                             else
-                                plot(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-                                %exit script until the part where it ask to view another graph
-                                run = false;
+                                F = F+1
+                                t = table2cell(tp(ii,n));
+                                gF = [gF, t];
                             end
+                        end
 
-                    end
-            elseif strcmp(time, '1 month')
-                table = P30STMdata;
-            elseif strcmp(time, '3 months')
-                readtable(monthSTMdata)
-                %add option of M/F or WT/HOM
-                 disp('For this time interval we have male and female data.')
-                m = input('Would you like to plot based on "gender" or "genotype"?','s');
-                   if strcmp(m,'gender')
-                       xvar = [M, F];
-                   else
-                       xvar = [WT, HOM];
-                   end
-                   %code to get data for male into M and female into F
-                   %code for y axis  
-                            y1 = table2cell(a(:,n));
-                            y2 = table2cell(b(:,n));
-                            y3 = table2cell(c(:,n));
-                            y4 = table2cell(d(:,n));
-                            y5 = table2cell(e(:,n));
-                            y6 = table2cell(f(:,n));
-                            gtype = input('Would you like to see the results in a scatterplot or line graph?','s');
-                            if strcmp(gtype, 'scatterplot')
-                                scatter(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-                                %exit script until the part where it ask to view another graph
-                                run = false;
+                            gtype = input('Would you like to see the results in a "line" or "bar" graph?','s');
+                              gFp = []
+                              gMp = []
+                              for jj = 1:F
+                                    gFp = [gFp gF{jj}(:)];
+                              end
+
+                              for kk = 1:M
+                                    gMp = [gMp gM{kk}(:)];
+                              end
+                            if strcmp(gtype, 'line')
+                                   f0 = figure
+                                    plot(gFp)
+                                    hold on
+                                    plot(gMp)                                  
                             else
-                                plot(xvar,y1,xvar,y2,xvar,y3,xvar,y4,xvar,y5,xvar,y6); 
-                                %exit script until the part where it ask to view another graph
-                                run = false;
+                                    f0 = figure
+                                    gMp = mean(gMp)
+                                    gFp = mean(gFp)
+                                    y = [gMp, gFp]
+                                    bar(y)
+                                    xlabel('gender')
+                                    xticklabels({'M','F'})
+                                    ylabel(yname)
                             end
-                     
+                    end 
+            skipy = false
+            elseif strcmp(time, '3 months')
+                table = P30STMdata;
+                type = P30STMdata;
+                t = P30STMdata;
+               [r,s] = size(table)
+               %add option of M/F or WT/HOM
+                disp('For this time interval we have male and female data.')
+                m = input('Would you like to plot based on "gender" or "genotype"?','s');
+                    if strcmp(m,'gender')
+                        %code to get data for male into M and female into F
+                        type = table2cell(table(:,21))
+                        tp = P30STMdata;
+                        disp(type)
+                        gM = []
+                        gF =[]
+                        F = 0
+                        M = 0
+                        for ii = 1:r
+                            A = type{ii}
+                            A = string(A)
+                            if strcmp(A,'M')
+                                M = M +1
+                                t = table2cell(tp(ii,n));
+                                gM = [gM, t]
+                            else
+                                F = F+1
+                                t = table2cell(tp(ii,n));
+                                gF = [gF, t]
+                            end
+                        end
+                            gtype = input('Would you like to see the results in a "line" or "bar" graph?','s');
+                              gFp = []
+                              gMp = []
+                              for jj = 1:F
+                                    gFp = [gFp gF{jj}(:)];
+                              end
+
+                              for kk = 1:M
+                                    gMp = [gMp gM{kk}(:)];
+                              end
+                            if strcmp(gtype, 'line')
+                                   f0 = figure
+                                    plot(gFp)
+                                    hold on
+                                    plot(gMp)     
+                            else
+                                    f0 = figure
+                                    gMp = mean(gMp)
+                                    gFp = mean(gFp)
+                                    y = [gMp, gFp]
+                                    bar(y)
+                                    xlabel('gender')
+                                    xticklabels({'M','F'})
+                                    ylabel(yname)
+                            end
+                    end  
+            skipy = false
             elseif strcmp(time, '14 months')
                 table = monthSTMdata1;
+                type = monthSTMdata1;
+                t = monthSTMdata1;
             elseif strcmp(time, '2 years')
                 table = yearSTMdata;
+                type = yearSTMdata;
+                t = yearSTMdata;
+            elseif strcmp(time, '1 month')
+                table = P30STMdata;
+                type = P30STMdata;
+                t = P30STMdata;
             else
                 disp('Invalid entry. Please enter valid entry.')
             end
     else 
         disp('Invalid entry. Please enter a valid entry.')
         run = false;
-    end
+            end
+    
           
 %from here down it's all good!    
     
@@ -196,7 +392,7 @@ else
     disp('Invalid entry. Please enter a valid muscle name.')
 end
 
-
+while skipy == true
 % ask for y variable
 disp('For the following question, type one of the following options:')
 disp('nerve terminal perimeter, nerve terminal area, total length of branches, average length of branches, complexity, AChR perimeter, AChR area, area of synaptic contactum, overlap, manual end plate area, manual compactness, fragmentation')
@@ -261,6 +457,7 @@ if strcmp(graphtype,'bar')
     genp = [genp gen{jj}(:)];
     end
     f2 = figure
+    subplot(1,2,1)
     genp = mean(genp);
     bar(genp)
     xlabel('HOM')
@@ -270,12 +467,11 @@ if strcmp(graphtype,'bar')
     for kk = 1:wt-1
     gwtp = [gwtp gwt{kk}(:)];
     end
-    f3 = figure
+    subplot(1,2,2)
     gwtp = mean(gwtp);
     bar(gwtp)
     xlabel('WT')
     ylabel(yname)
-    run = false;
     
 elseif strcmp(graphtype,'line')
     %plot WT Line
@@ -283,6 +479,7 @@ elseif strcmp(graphtype,'line')
     genp = [genp gen{jj}(:)];
     end
     f2 = figure
+    subplot(1,2,1)
     plot(genp)
     xlabel('HOM')
     ylabel(yname)
@@ -291,26 +488,25 @@ elseif strcmp(graphtype,'line')
     for kk = 1:wt-1
     gwtp = [gwtp gwt{kk}(:)];
     end
-    f3 = figure
+    subplot(1,2,2)
     plot(gwtp)
     xlabel('WT')
     ylabel(yname)
-    run = false;
+
 else 
     disp('Invalid entry, please try again.')
 end
 
+%skipy end
 end
-
 
 %to view additional graphs
 another = input('Would you like to request an additional graph? (yes/no)','s');
 if strcmp(another,'yes')
-    f2 = figure;
     run = true;
     %ask questions again
 else
     disp('Hope this helped!')
+    run = false;
 end
-
-
+end
