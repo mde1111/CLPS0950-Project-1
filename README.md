@@ -36,6 +36,10 @@ Components of Project:
     
 3. stats_genotype_gender.m
 
+    Written by Madison Ewing
+    
+    Time = 11.5 hours
+
     Function that runs statistical analysis on NMJ morphological data; picks best fit distribution and runs generalized linear model by either genotype or genotype+gender.
     
     Input table containing NMJ data (e.g. P21 STM data.csv contained in repository) and desired name of output file.
