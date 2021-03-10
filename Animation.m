@@ -1,7 +1,5 @@
 %Animation: Neuromuscular Junction - started 3/3/21 (Katie Yetter)
 
-%Questions for TA: Is the legend okay?  Is the order of the code okay? 
-
 %Notes
     %Currently I have  two images: Both are 3 month male sternomastoid images: animal524_40x_03 from a HOM and animal551_40x_02 from a WT animal.
     %Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
@@ -9,79 +7,67 @@
 % Creating Animation
     %Display image overview experiment, as well as showing the sternomastoid muscle and wear it is located
         %This will be the original image presented
-
-        
- %Help with this initial screen setup      
-
+     
+Screen('Preference', 'VisualDebuglevel', 3);
 screens = Screen('Screens');
 screenNumber = max(screens);
 white  = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 grey = white / 2;
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, grey);
-
+topPriorityLevel = MaxPriority(window);
+Priority(topPriorityLevel);
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 ifi = Screen('GetFlipInterval', window);
 rr = FrameRate(window);
-topPriorityLevel = MaxPriority(window);
-Priority(topPriorityLevel);  
-qw
-PsychDefaultSetup(2);
+  
+
+                        %Display instructions
+Screen('TextSize', window, 20);
+Screen('TextFont', window, 'Courier');
+DrawFormattedText(window, 'Instructions: \n \nRefer to the legend to choose which image you want to see! \n \nPress space to close.', 18, 50, [0 0 1]);
+screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];
+Screen('Flip', window);
+continueKey = KbName('space');
+hasAnswered = false;
+while ~hasAnswered
+     [keyIsDown, secs, keyCode] = KbCheck;
+     if keyIsDown
+          if keyCode(continueKey) 
+             hasAnswered = true;
+         end
+     end
+end
+
+                       %Display Experimental Design Image
 the_img =imread('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
 [s1, s2, ~] = size(the_img);
 imageTexture = Screen('MakeTexture', window, the_img);
 Screen('DrawTexture', window, imageTexture, [], [], 0);
 Screen('Flip', window)
-KbStrokeWait;
-sca;
+
 
                         %Start of Animation
-
 %Legend for key press
-[screenXpixels, screenYpixels] = Screen('WindowSize', window);
-Screen('TextSize', window, 70);
+%[screenXpixels, screenYpixels] = Screen('WindowSize', window);
+Screen('TextSize', window, 30);
 Screen('TextFont', window, 'Courier');
+screenXpixels * 0.5, screenYpixels * 0.5, [0 1 0];  
 DrawFormattedText(window, 'Legend');
-DrawFormattedText(window, 'Press  q for WT Presynaptic Neuron'); %Display WT gene mouse (presynaptic) 
-DrawFormattedText(window, 'Press w for Deltalg3 Presynaptic Neuron'); %Display Deltalg3 gene mouse (presynaptic)
-DrawFormattedText(window, 'Press e for WT Postsynaptic Neuron'); %Display WT gene mouse (postsynaptic)
-DrawFormattedText(window, 'Press r for Deltalg3 Postsynaptic Neuron'); %Display Deltalg3 gene  mouse (postsynaptic)
-DrawFormattedText(window, 'Press space to exit current image'); 
-screenXpixels, screenYpixels * 0.5, [0 0 1];
+DrawFormattedText(window, 'Press q for WT Presynaptic Neuron \n \nPress w for Deltalg3 Presynaptic Neuron \n \nPress e for WT Postsynaptic Neuron \n \nPress r for Deltalg3 Postsynaptic Neuron \n \nPress space to exit current image'); 
+%Display WT gene mouse  photo (presynaptic) 
+%Display Deltalg3 gene mouse photo (presynaptic)
+%Display WT gene mouse photo (postsynaptic)
+%Display Deltalg3 gene mouse photo (postsynaptic)
+  
 Screen('Flip', window);
-
-%Display instructions
-Screen('TextSize', window, 18);
-Screen('TextFont', window, 'Courier');
-DrawFormattedText(window, 'Instructions:', 18, 50, [0 0 0]);
-DrawFormattedText(window, 'Refer to the legend to choose which image you want to see!', 20, 50, [0 1 0]);
-DrawFormattedText(window,  'Press Space to close', 18, 50, [000]);
-Screen('Flip', window);
-rt = [];
-respKey = [];
-hasAnswered =  false;
-while ~hasAnswered
-    [keyIsDown,secs,keycode] = KbCheck;
-    if keyIsdown
-        if keyCode(space)
-            ShowCursor;
-            sca;
-            return
-        else
-            hasAnswered = true;
-            tEnd =  GetSecs;
-        end
-    end
-    respKey = [respKey; KbName(keyCode)];
-    rt = [rt; tEnd -  tStart];
-    WaitSecs(2)
-end
-
-
+KbStrokeWait;
+  
 while quit == false
 image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Bring up original image of experimental data
 end
-%Press a Key based on the legend to see a specific part of the neuromuscular junction
+
+    %Press a Key based on the legend to see a specific part of the neuromuscular junction
 answered = false;
 while ~answered
 [keyIsDown, secs, keyCode] = KbCheck;
@@ -100,7 +86,7 @@ if keyIsDown
   end
 end
 
-%Display original image (Experimental Design) before closing application 
+    %Display original image (Experimental Design) before closing application 
 
 [window, windowRect] = PsychImaging(('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'), screenNumber, grey); %Bring up original image of experimental data
 KbStrokeWait;
