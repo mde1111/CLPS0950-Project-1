@@ -15,14 +15,17 @@
 
 screens = Screen('Screens');
 screenNumber = max(screens);
-[window, windowRect] = PsychImaging('OpenWindow', screenNumber, white);
+white  = WhiteIndex(screenNumber);
+black = BlackIndex(screenNumber);
+grey = white / 2;
+[window, windowRect] = PsychImaging('OpenWindow', screenNumber, grey);
 
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 ifi = Screen('GetFlipInterval', window);
 rr = FrameRate(window);
 topPriorityLevel = MaxPriority(window);
-Priority(topPriorityLevel);
-
+Priority(topPriorityLevel);  
+qw
 PsychDefaultSetup(2);
 the_img =imread('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
 [s1, s2, ~] = size(the_img);
@@ -32,7 +35,7 @@ Screen('Flip', window)
 KbStrokeWait;
 sca;
 
-%Start of Animation
+                        %Start of Animation
 
 %Legend for key press
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
