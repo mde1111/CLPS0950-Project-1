@@ -1,13 +1,16 @@
-%Animation: Neuromuscular Junction - started 3/3/21 (Katie Yetter)
+%Animation: Neuromuscular Junction Images - started 3/3/21 (Katie Yetter)
 
 %Notes
-    %Currently I have  two images: Both are 3 month male sternomastoid images: animal524_40x_03 from a HOM and animal551_40x_02 from a WT animal.
-    %Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
+    % 1. Four images: All are 3 month male sternomastoid images: animal524_40x_03 from a HOM (Deltalg3) and animal551_40x_02 from a WT gene.
+    % 2. Channel 1 - postsynaptic (muscle endplate) & channel 2 - presynaptic (nerve terminal).
     
-% Creating Animation
-    %Display image overview experiment, as well as showing the sternomastoid muscle and wear it is located
-        %This will be the original image presented
-     
+                        % Creating Animation: Layout
+   % 1. Display experiment overview in main image -- then provide detailed
+   %images of the presynaptic and postsynaptic neurons in the WT & HOM
+   %genes within the mice.
+   % 2. The sternomastoid muscle is where these neurons are located
+
+                        % Set Screen Preferences/Background Image
 Screen('Preference', 'VisualDebuglevel', 3);
 screens = Screen('Screens');
 screenNumber = max(screens);
@@ -47,8 +50,9 @@ Screen('DrawTexture', window, imageTexture, [], [], 0);
 Screen('Flip', window)
 
 
-                        %Start of Animation
-%Legend for key press
+                        %View Neuronal Images
+                        %Legend for key press
+                        
 %[screenXpixels, screenYpixels] = Screen('WindowSize', window);
 Screen('TextSize', window, 30);
 Screen('TextFont', window, 'Courier');
