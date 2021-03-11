@@ -16,6 +16,7 @@ Components of Project:
 
     Written by Katie Yetter
     Debugged by Maria Rodriguez
+    Debugging time = 1hr
     
     Time = 35 hours
     
