@@ -15,6 +15,7 @@ Components of Project:
 1. Animation.m
 
     Written by Katie Yetter
+    Debugged by Maria Rodriguez
     
     Time = 35 hours
     
@@ -25,6 +26,7 @@ Components of Project:
 2. NMJ_image_analysis.m
 
     Written by Madison Ewing
+    Debugged by 
     
     Time = 17.5 hours
 
@@ -37,6 +39,7 @@ Components of Project:
 3. stats_genotype_gender.m
 
     Written by Madison Ewing
+    Debbuged by 
     
     Time = 11.5 hours
 
