@@ -10,8 +10,9 @@
    %genes within the mice.
    % 2. The sternomastoid muscle is where these neurons are located
 
-                % Set Screen Preferences/Background Image
-Screen('Preference', 'VisualDebuglevel', 3);
+                % Set Screen Preferences/Background Image                
+Screen('Preference', 'SkipSyncTests', 1);
+PsychDefaultSetup(2);   
 screens = Screen('Screens');
 screenNumber = max(screens);
 white  = WhiteIndex(screenNumber);
@@ -25,11 +26,17 @@ ifi = Screen('GetFlipInterval', window);
 rr = FrameRate(window);
   
 
-                        %Display instructions
+                        %Display Animation instructions
 Screen('TextSize', window, 20);
 Screen('TextFont', window, 'Courier');
 DrawFormattedText(window, 'Instructions: \n \nRefer to the legend to choose which image you want to see! \n \nPress space to close.', 18, 50, [0 0 1]);
 screenXpixels * 0.5; screenYpixels * 0.5; [0 0 1];
+
+                        %Display Experimental Design Image
+the_img = imread('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
+imageTexture = Screen('MakeTexture', window, the_img);
+[s1, s2, ~] = size(the_img); %make image bigger 
+Screen('DrawTexture', window, imageTexture, [], [], 0);
 Screen('Flip', window);
 continueKey = KbName('space');
 hasAnswered = false;
@@ -40,61 +47,52 @@ while ~hasAnswered
              hasAnswered = true;
          end
      end
-end
+end            
+ 
 
-                       %Display Experimental Design Image
-the_img =imread('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Photo of the initial experimental design
-[s1, s2, ~] = size(the_img);
-imageTexture = Screen('MakeTexture', window, the_img);
-Screen('DrawTexture', window, imageTexture, [], [], 0);
-Screen('Flip', window)
-
-
-                        %View Neuronal Images
-                        %Legend for key press
-                        
-%[screenXpixels, screenYpixels] = Screen('WindowSize', window);
+           %View Neuronal Images using key press Legend                         
+quit = false;
+while ~quit
 Screen('TextSize', window, 30);
 Screen('TextFont', window, 'Courier');
-screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];  
-DrawFormattedText(window, 'Legend');
-DrawFormattedText(window, 'Press q for WT Presynaptic Neuron \n \nPress w for Deltalg3 Presynaptic Neuron \n \nPress e for WT Postsynaptic Neuron \n \nPress r for Deltalg3 Postsynaptic Neuron \n \nPress space to exit current image'); 
+%screenXpixels * 0.5, screenYpixels * 0.5, [0 0 1];  
+DrawFormattedText(window, 'Legend \n \nPress q for WT Presynaptic Neuron \n \nPress w for Deltalg3 Presynaptic Neuron \n \nPress e for WT Postsynaptic Neuron \n \nPress r for Deltalg3 Postsynaptic Neuron \n \nPress space to exit current image'); 
     %Display WT gene mouse  photo (presynaptic) 
     %Display Deltalg3 gene mouse photo (presynaptic)
     %Display WT gene mouse photo (postsynaptic)
     %Display Deltalg3 gene mouse photo (postsynaptic)
-while quit == false
-image = loadimage('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'); %Bring up original image of experimental data
-end  
-Screen('Flip', window);
-KbStrokeWait;
    
-    %Press a Key based on the legend to see a specific part of the neuromuscular junction
-answered = false;
-while ~answered
-[keyIsDown, secs, keyCode] = KbCheck;
-if keyIsDown
+Screen('Flip', window);
+KbStrokeWait; 
+   
+    %Press the indicated key to see a specific part of the neuromuscular junction
+
+
+[~, keycode] = KbStrokeWait;
   if strcmp(KbName(keyCode),'q') %check for key press
     image = loadimage('wildtype_presynaptic.jpg'); %Display WT gene mouse (presynaptic) 
+    image = imread('wildtype_presynaptic.jpg');
+    KbStrokeWait;
   elseif strcmp(KbName(keyCode),'w') %check for key press
     image = loadimage('deltalg3_presynaptic.jpg'); %Display Deltalg3 gene mouse (presynaptic)
+    image = imread('deltalg3_presynaptic.jpg');
+    KbStrokeWait;
   elseif strcmp(KbName(keyCode),'e') %check for key press
     image = loadimage('wildtype_postsynaptic.jpg'); %Display WT gene mouse (postsynaptic)
+    image = imread('wildtype_postsynaptic.jpg');
+    KbStrokeWait;
   elseif strcmp(KbName(keyCode),'r') %check for key press
     image = loadimage('deltalg3_postsynaptic'); %Display Deltalg3 gene mouse (postsynaptic)
+    image = imread('deltalg3_postsynaptic');
+    KbStrokeWait;
   elseif strcmp(KbName(keyCode),'space') %Exit current image
     quit = true;
     break
   end
 end
-
-    %Display original image (Experimental Design) before closing application 
-
-[window, windowRect] = PsychImaging(('file:///Users/katieyetter/Pictures/Experimental%20Design%20main%20image.jpg'), screenNumber, grey); %Bring up original image of experimental data
-KbStrokeWait;
 Priority(0);
 sca; %This will close all windows
-end
+
 
 %%% Alternative method to displaying images %%%%%%
 
