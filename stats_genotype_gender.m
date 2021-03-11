@@ -49,6 +49,12 @@ if ~gender
 
         %find and save best distribution of data based on minimum AICc
         [row, col] = find(AIC_vec == min(AIC_vec)); %#ok<ASGLU>
+        
+        %fix bug for if tie AIC values
+        if length(col) > 1
+            col = col(1,1);
+        end
+        
         if col == 1
             data_dist = ("Normal");
             data_mod = norm_mod;
@@ -118,10 +124,7 @@ else
         AIC_vec = [AIC_vec, pois_mod.ModelCriterion.AICc];
         beta_mod = fitglm(NMJ_data, modelspec, 'link', 'logit');
         AIC_vec = [AIC_vec, beta_mod.ModelCriterion.AICc];
-        if jj == 15
-        disp(AIC_vec);
-        end
-
+        
         %find and save best fit distribution based on minimum AICc
         [row, col] = find(AIC_vec == min(AIC_vec));%#ok<ASGLU>
         
