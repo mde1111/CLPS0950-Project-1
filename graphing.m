@@ -2,6 +2,7 @@
 run = true;
 skipy = true;
 next = true;
+last = true;
 %ask which muscle they would like to view the data and read data for that muscle 
 while run == true 
 muscle = input('Which muscle (STM, SOL, EDL) data are you interested in?','s');
@@ -183,6 +184,7 @@ if strcmp(muscle,'STM')
                     else 
                         yvar = n;
                         skipy = false;
+                        last = true;
                     end
 
             elseif strcmp(time, '21 days')
@@ -246,6 +248,7 @@ if strcmp(muscle,'STM')
                     else
                         yvar = n;
                         skipy = false;
+                        last = true;
                     end
             elseif strcmp(time, '3 months')
                 table = x3monthSTMdata2;
@@ -307,6 +310,7 @@ if strcmp(muscle,'STM')
                     else
                         yvar = n;
                         skipy =  false;
+                        last = true;
                     end  
             elseif strcmp(time, '1 month')
                 table = P30STMdata;
@@ -315,6 +319,7 @@ if strcmp(muscle,'STM')
                 yvar = n;
                 next = true;
                 skipy = false;
+                last = true;
             elseif strcmp(time, '14 months')
                 table = x14moSTMdata1;
                 type = x14moSTMdata1;
@@ -322,6 +327,7 @@ if strcmp(muscle,'STM')
                 yvar = n;
                 next = true;
                 skipy = false;
+                last = true;
             elseif strcmp(time, '2 years')
                 table = yearSTMdata;
                 type = yearSTMdata;
@@ -329,12 +335,15 @@ if strcmp(muscle,'STM')
                 yvar = n;
                 next = true;
                 skipy = false;
+                last = true;
             else
-                disp('Invalid entry. Please enter valid entry.')
+                disp('Invalid entry. Please rerun code.')
+                next = false;
             end
     else 
-        disp('Invalid entry. Please enter a valid entry.')
+        disp('Invalid entry. Please rerun code.')
         run = false;
+        next = false;
             end
     
           
@@ -356,8 +365,8 @@ elseif strcmp(muscle,'EDL')
     next = true;
     skipy = true;
 else 
-    disp('Invalid entry. Please enter a valid muscle name.')
-    run = false;
+    disp('Invalid entry. Please rerun code.')
+    next = false;
 end
 
 while next == true
@@ -392,12 +401,14 @@ yname = yvar;
     elseif strcmp(yvar, 'fragmentation')
         yvar = 18;
     else
-        disp('Invalid entry. Please try again.')
-        run = false;
+        disp('Invalid entry. Please rerun code.')
+        last = false;
     end  
 skipy = false;
+last = true;
 end
 
+while last == true
 %determine graphtype
 disp('For the following question, type one of the following options: bar, line')
 graphtype = input('What type of graph would you like?','s');
@@ -468,8 +479,11 @@ elseif strcmp(graphtype,'line')
     ylabel(yname)
 
 else 
-    disp('Invalid entry, please try again.')
+    disp('Invalid entry, please rerun code.')
     run = false;
+end
+last = false;
+%end for last
 end
 next = false;
 %end for next
