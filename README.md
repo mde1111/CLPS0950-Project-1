@@ -16,7 +16,7 @@ Components of Project:
 
     Written by Katie Yetter
     
-    Time = 30 hours
+    Time = 35 hours
     
     Interactive animation script showing pre- and postsynaptic images taken from wild type and deltaIg3-MuSK (HOM) mice
     
