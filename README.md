@@ -57,7 +57,7 @@ Components of Project in Order:
     
     Debugged by Maria Rodriguez (debugging time = 1hr)
     
-    Time = 35 hours
+    Time = 30 hours
     
     Interactive animation script showing pre- and postsynaptic images taken from wild type and deltaIg3-MuSK (HOM) mice
     
