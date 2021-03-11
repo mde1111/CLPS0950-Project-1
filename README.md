@@ -66,3 +66,6 @@ Components of Project in Order:
     
 Please refer to our initial project proposal google doc for  up-to-date information about meetings times, as well as what we learned from the project.  You can also find information about our research question and where the data came from.
 https://docs.google.com/document/d/1zn9ZwnAYAbFUBuDbsmrq2jWfgl9DJjVmSKMpRrb0-Yk/edit?usp=sharing
+
+Video Demo:
+![video](https://github.com/mde1111/CLPS0950-Project-1/blob/master/Projectrec%20(1).gif)
