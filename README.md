@@ -50,7 +50,7 @@ Components of Project:
 
     Written by Maria Rodriguez
     
-    Time = 
+    Time = 17 hours
     
     Interactive graphing script that graphs NMJ morphological data according to specifications by the user.
     
