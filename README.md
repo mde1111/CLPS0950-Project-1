@@ -10,21 +10,14 @@ The overall goal of this repository is to aid in visualization, image analysis, 
 
 Research Question: What affect does deletion of the Ig3 domain of MuSK have on morphology of the mouse neuromuscular junction?
 
-Components of Project:
+Components of Project in Order:
 
-1. Animation.m
 
-    Written by Katie Yetter
-    
-    Time = 35 hours
-    
-    Interactive animation script showing pre- and postsynaptic images taken from wild type and deltaIg3-MuSK (HOM) mice
-    
-    Uses psychtoolbox to display images
-
-2. NMJ_image_analysis.m
+1. NMJ_image_analysis.m
 
     Written by Madison Ewing
+    
+    Debugged by Katie Yetter (debugging time = 1 hour)
     
     Time = 17.5 hours
 
@@ -34,9 +27,11 @@ Components of Project:
     
     Outputs presynaptic and postsynaptic areas and perimeters, area of synaptic contact, overlap, average and total nerve terminal branch length, nerve terminal complexity, endplate area, compactness, and postsyanptic fragmentation; saves as csv file.
     
-3. stats_genotype_gender.m
+2. stats_genotype_gender.m
 
     Written by Madison Ewing
+    
+    Debbuged by Katie Yetter (debugging time = 1 hour)
     
     Time = 11.5 hours
 
@@ -46,12 +41,27 @@ Components of Project:
     
     Outputs signficance by genotype, best fit distribution, and p values for each morphological measurement; saves as csv file.
     
-4. graphing.m
+3. graphing.m
 
     Written by Maria Rodriguez
+    
+    Debugged by Madison Ewing (debugging time = 1.0 hours)
     
     Time = 17 hours
     
     Interactive graphing script that graphs NMJ morphological data according to specifications by the user.
     
+4. Animation.m
+
+    Written by Katie Yetter
     
+    Debugged by Maria Rodriguez (debugging time = 1hr)
+    
+    Time = 35 hours
+    
+    Interactive animation script showing pre- and postsynaptic images taken from wild type and deltaIg3-MuSK (HOM) mice
+    
+    Uses psychtoolbox to display images
+    
+    
+Please refer to our initial project proposal google doc for  up-to-date information about meetings times, as well as what we learned from the project.  You can also find information about our research question and where the data came from.
